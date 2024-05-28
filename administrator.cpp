@@ -6,6 +6,6 @@
 #include "administrator.h"
 
 
-using namespace std;
+
 
 // etc.

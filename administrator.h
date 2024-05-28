@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <string>
 
-using namespace std;
+
 
 class administrator{
 
