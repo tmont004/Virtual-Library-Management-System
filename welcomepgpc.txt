@@ -1,0 +1,90 @@
+// Headers
+
+class WelcomePage:
+
+    // Private members
+    private:
+        string username
+        string password
+
+    // Public members
+    public:
+
+        // Constructor
+        WelcomePage(string usr, string pswrd):
+            username(usr)
+            password(pswrd)
+
+        // Method to capture user input
+        void inputCredentials():
+            input username
+            input password
+
+        // Method for authentication
+        bool authenticate():
+            send username to database
+            if username is found in database:
+                if password matches username in database:
+                    return true
+                else:
+                    return false
+            else:
+                return false
+
+        // Method to create an account
+        bool createAccount(string tempUsername, string tempPassword):
+            if tempUsername is not in database:
+                add tempUsername and tempPassword to database
+                return true
+            else:
+                return false // Username already exists
+
+        // Method to logout
+        void logout():
+            reset credentials
+            return to welcome page
+
+        // Method to exit the program
+        void exit():
+            terminate program
+
+// Function to add account to database
+void addAccountToDatabase(string username, string password):
+    // Logic to add account to database
+
+// Main function
+void main():
+    WelcomePage user
+
+    string username
+    string password
+
+    // Capture user action
+    string action = captureUserAction() // Login, Register, Logout, Exit
+
+    switch(action):
+        case "login":
+            user.inputCredentials()
+            if user.authenticate():
+                send to welcome page
+            else:
+                display authentication failed
+            break
+        case "register":
+            user.inputCredentials()
+            if user.createAccount(username, password):
+                addAccountToDatabase(username, password)
+                display account creation successful
+            else:
+                display username already exists
+            break
+        case "logout":
+            user.logout()
+            break
+        case "exit":
+            user.exit()
+            break
+        default:
+            display invalid action
+
+
