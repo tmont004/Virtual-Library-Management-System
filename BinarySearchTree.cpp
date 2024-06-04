@@ -2,7 +2,7 @@
 #include "Book.h"
 
 // Book class implementation
-Book::Book(int isbn, const std::string& title, const std::string& author)
+Book::Book(std::string isbn, const std::string& title, const std::string& author)
     : isbn(isbn), title(title), author(author), isBorrowed(false) {}
 
 // BSTNode class implementation
@@ -14,7 +14,7 @@ BookBST::BookBST() : root(nullptr) {}
 void BookBST::addBook(BSTNode*& node, Book* book) {
     if (node == nullptr) {
         node = new BSTNode(book);
-    } else if (book->isbn < node->book->isbn {
+    } else if (book->isbn < node->book->isbn){
         addBook(node->left, book);
     } else {
         addBook(node->right, book);
@@ -40,14 +40,14 @@ void BookBST::displayBooks() const {
 BSTNode* BookBST::findBook(BSTNode* node, std::string isbn) const {
     if (node == nullptr || node->book->isbn == isbn) {
         return node;
-    } else if (id < node->book->isbn) {
+    } else if (isbn < node->book->isbn) {
         return findBook(node->left, isbn);
     } else {
         return findBook(node->right, isbn);
     }
 }
 
-Book* BookBST::searchBook(int id) const {
+Book* BookBST::searchBook(std::string isbn) const {
     BSTNode* node = findBook(root, isbn);
     return node ? node->book : nullptr;
 }

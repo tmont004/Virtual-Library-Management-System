@@ -20,11 +20,10 @@ public:
     // Print details of the Book object
     void print() const;
 
-private:
     std::string title; // Title of the book
     std::string author; // Author of the book
     std::string isbn; // ISBN (International Standard Book Number) of the book
-    bool isBorrowed // Checks to see if book is available for borrowing
+    bool isBorrowed; // Checks to see if book is available for borrowing
 };
 
 #endif
