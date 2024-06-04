@@ -40,7 +40,7 @@ void LibrarySystem::preLoginMenu() {
         }
     } while (choice != 3);
 }
-
+/*
 // Method to handle user login
 void LibrarySystem::login() {
     std::string username, password;
@@ -77,7 +77,7 @@ void LibrarySystem::registerUser() {
         std::cout << "Username already exists.\n";
     }
 }
-
+*/
 // Method to display user menu
 void LibrarySystem::userMenu(const std::string& username) {
     int choice;
@@ -96,7 +96,7 @@ void LibrarySystem::userMenu(const std::string& username) {
                 returnBook(username);  // Handle book returning
                 break;
             case 4:
-                users[username].viewBorrowedBooks();  // View borrowed books
+               // users[username].viewBorrowedBooks();  // View borrowed books
                 break;
             case 5:
                 std::cout << "Logged out.\n";
@@ -166,7 +166,7 @@ void LibrarySystem::removeBook() {
         std::cout << "Book not found.\n";
     }
 }
-
+/*
 // Method to update book information
 void LibrarySystem::updateBook() {
     std::string isbn, title, author;
@@ -176,3 +176,4 @@ void LibrarySystem::updateBook() {
     // Check if the book exists
     if (books.find(isbn) != books.end()) {
         std
+*/

@@ -2,23 +2,28 @@
 #define BOOK_H
 
 #include <string>
+#include "json.hpp" // Include JSON library
 
-// Book class definition
+using json = nlohmann::json; // Alias for JSON namespace
+
 class Book {
 public:
-    Book() = default;  // Default constructor
-    Book(const std::string& title, const std::string& author, const std::string& isbn);  // Parameterized constructor
+    // Constructor to initialize a Book object with provided title, author, and ISBN
+    Book(const std::string &title = "", const std::string &author = "", const std::string &isbn = "");
 
-    std::string getTitle() const;  // Get book title
-    std::string getAuthor() const;  // Get book author
-    std::string getISBN() const;  // Get book ISBN
+    // Convert Book object to JSON format
+    json toJson() const;
 
-    void updateBookInfo(const std::string& title, const std::string& author);  // Update book information
+    // Create Book object from JSON data
+    static Book fromJson(const json &j);
+
+    // Print details of the Book object
+    void print() const;
 
 private:
-    std::string title;  // Book title
-    std::string author;  // Book author
-    std::string isbn;  // Book ISBN
+    std::string title; // Title of the book
+    std::string author; // Author of the book
+    std::string isbn; // ISBN (International Standard Book Number) of the book
 };
 
-#endif // BOOK_H
+#endif
