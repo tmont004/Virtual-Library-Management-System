@@ -21,7 +21,7 @@ int main() {
     std::cout << "Login result: " << (userRegistry.loginUser("testuser", "password") ? "Success" : "Failure") << std::endl;
 
     // Test promoting a user to admin
-    std::cout << "Promoting user to admin..." << std::endl;
+    std::cout << "\nPromoting user to admin..." << std::endl;
     userRegistry.promoteToAdmin("testuser");
 
     // Test if the user is now an admin
@@ -29,7 +29,7 @@ int main() {
     std::cout << "Is admin: " << (userRegistry.isAdmin("testuser") ? "Yes" : "No") << std::endl;
 
     // Test demoting a user from admin
-    std::cout << "Demoting user from admin..." << std::endl;
+    std::cout << "\nDemoting user from admin..." << std::endl;
     userRegistry.demoteFromAdmin("testuser");
 
     // Test if the user is no longer an admin
@@ -37,7 +37,7 @@ int main() {
     std::cout << "Is admin: " << (userRegistry.isAdmin("testuser") ? "Yes" : "No") << std::endl;
 
     // Test changing user password
-    std::cout << "Changing user password..." << std::endl;
+    std::cout << "\nChanging user password..." << std::endl;
     userRegistry.changeUserPassword("testuser", "newpassword");
 
     // Test login with new password
