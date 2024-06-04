@@ -1,18 +1,10 @@
-#ifndef LIBRARY_MANAGEMENT_SYSTEM_H
-#define LIBRARY_MANAGEMENT_SYSTEM_H
+#ifndef BINARY_SEARCH_TREE_H
+#define BINARY_SEARCH_TREE_H
 
 #include <string>
 #include <iostream>
+#include "book.h"
 
-class Book {
-public:
-    int id;
-    std::string title;
-    std::string author;
-    bool isBorrowed;
-
-    Book(int id, const std::string& title, const std::string& author);
-};
 
 class BSTNode {
 public:
@@ -29,13 +21,13 @@ private:
 
     void addBook(BSTNode*& node, Book* book);
     void inOrderTraversal(BSTNode* node) const;
-    BSTNode* findBook(BSTNode* node, int id) const;
+    BSTNode* findBook(BSTNode* node, std::string isbn) const;
 
 public:
     BookBST();
     void addBook(Book* book);
     void displayBooks() const;
-    Book* searchBook(int id) const;
+    Book* searchBook(std::string isbn) const;
 };
 
-#endif //LIBRARY_MANAGEMENT_SYSTEM_H
+#endif //BINARY_SEARCH_TREE_H
