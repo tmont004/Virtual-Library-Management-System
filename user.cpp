@@ -74,13 +74,14 @@ void UserRegistry::loadUsersFromJSON() {
             userJson["password"],
             userJson["isAdmin"]
         );
-        users.push_back(user);
+        users[user.getUsername()] = user; // Insert into unordered_map
     }
 }
 
 void UserRegistry::saveUsersToJSON() const {
     json jsonData;
-    for (const auto& user : users) {
+    for (const auto& pair : users) {
+        const User& user = pair.second;
         json userJson = {
             {"username", user.getUsername()},
             {"firstName", user.getFirstName()},
@@ -105,59 +106,51 @@ void UserRegistry::saveUsersToJSON() const {
 }
 
 void UserRegistry::addUser(User newUser) {
-    users.push_back(newUser);
+    users[newUser.getUsername()] = newUser; // Insert into unordered_map
 }
 
 bool UserRegistry::loginUser(std::string username, std::string password) const {
-    for (const auto& user : users) {
-        if (user.getUsername() == username && user.checkPassword(password)) {
-            return true;
-        }
+    auto it = users.find(username);
+    if (it != users.end()) {
+        const User& user = it->second;
+        return user.checkPassword(password);
     }
     return false;
 }
 
 bool UserRegistry::isUsernameTaken(std::string username) const {
-    for (const auto& user : users) {
-        if (user.getUsername() == username) {
-            return true;
-        }
-    }
-    return false;
+    return users.find(username) != users.end();
 }
 
 void UserRegistry::promoteToAdmin(std::string username) {
-    for (auto& user : users) {
-        if (user.getUsername() == username) {
-            user.setAdminStatus(true);
-            return;
-        }
+    auto it = users.find(username);
+    if (it != users.end()) {
+        User& user = it->second;
+        user.setAdminStatus(true);
     }
 }
 
 void UserRegistry::demoteFromAdmin(std::string username) {
-    for (auto& user : users) {
-        if (user.getUsername() == username) {
-            user.setAdminStatus(false);
-            return;
-        }
+    auto it = users.find(username);
+    if (it != users.end()) {
+        User& user = it->second;
+        user.setAdminStatus(false);
     }
 }
 
 bool UserRegistry::isAdmin(std::string username) const {
-    for (const auto& user : users) {
-        if (user.getUsername() == username) {
-            return user.isAdminUser();
-        }
+    auto it = users.find(username);
+    if (it != users.end()) {
+        const User& user = it->second;
+        return user.isAdminUser();
     }
     return false;
 }
 
 void UserRegistry::changeUserPassword(std::string username, std::string newPassword) {
-    for (auto& user : users) {
-        if (user.getUsername() == username) {
-            user.changePassword(newPassword);
-            return;
-        }
+    auto it = users.find(username);
+    if (it != users.end()) {
+        User& user = it->second;
+        user.changePassword(newPassword);
     }
 }
