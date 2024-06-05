@@ -23,6 +23,7 @@ public:
     std::string title; // Title of the book
     std::string author; // Author of the book
     std::string isbn; // ISBN (International Standard Book Number) of the book
+    std::int copiesInStock;
     bool isBorrowed; // Checks to see if book is available for borrowing
 };
 
