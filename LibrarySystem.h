@@ -36,6 +36,13 @@ private:
     void searchBooks();  //(need to be updated)
     void borrowBook(const std::string& username);  //(need to be updated)
     void returnBook(const std::string& username);  //(need to be updated)
+
+    // Additional optional functions
+    int getNoOfCopiesInStock() const;
+    bool checkTitle(std::string title);            // ADT to compliment searchBooks()?
+    void updateInStock(int num);
+    void setCopiesInStock(int num);
+
 };
 
 #endif // LIBRARYSYSTEM_H
