@@ -177,3 +177,25 @@ void LibrarySystem::updateBook() {
     if (books.find(isbn) != books.end()) {
         std
 */
+
+
+//-------------------------------------------------------
+int LibrarySystem::getNoOfCopiesInStock() const
+{
+    return copiesInStock;                        // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
+}
+
+bool LibrarySystem::checkTitle(std::string title)
+{
+    return(*this == title)                        // *this required since formal parameter matches "title" from Book.h? *this will need scope :: from Book.h?
+}
+
+void LibrarySystem::updateInStock(int num)
+{
+    copiesInStock += num;
+}
+
+void LibrarySystem::setCopiesInStock(int num)
+{
+    copiesInStock = num;
+}
