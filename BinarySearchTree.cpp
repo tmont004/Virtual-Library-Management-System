@@ -51,3 +51,21 @@ Book* BookBST::searchBook(std::string isbn) const {
     BSTNode* node = findBook(root, isbn);
     return node ? node->book : nullptr;
 }
+
+
+//----------------------------------------------------------------
+// Public methods con't. for review.
+
+bool BookBST::isEmpty() const;
+
+int BookBST::treeHeight() const;
+
+int BookBST::treeNodeCount() const;
+
+int BookBST::treeLeavesCount() const;
+
+void BookBST::destroyTree();            
+
+
+~BookBST();
+//----------------------------------------------------------------
