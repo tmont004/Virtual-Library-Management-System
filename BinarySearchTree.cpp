@@ -56,15 +56,25 @@ Book* BookBST::searchBook(std::string isbn) const {
 //----------------------------------------------------------------
 // Public methods con't. for review.
 
-bool BookBST::isEmpty() const;
+bool BookBST::isEmpty() const{
+    return (root == nullptr);
+}
 
-int BookBST::treeHeight() const;
+int BookBST::treeHeight() const{
+    return height(root);
+}
 
-int BookBST::treeNodeCount() const;
+int BookBST::treeNodeCount() const{
+    return nodeCount(root);
+}
 
-int BookBST::treeLeavesCount() const;
+int BookBST::treeLeavesCount() const{
+    return leavesCount(root);
+}
 
-void BookBST::destroyTree();            
+void BookBST::destroyTree(){
+    destroy(root);
+}
 
 
 ~BookBST();
