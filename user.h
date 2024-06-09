@@ -19,6 +19,9 @@ private:
     bool isAdmin;
 
 public:
+
+    User() : isAdmin(false) {}  // Default constructor
+
     User(std::string uname, std::string fname, std::string lname, std::string phone, std::string addr, std::string bday, std::string pass, bool admin);
     
     std::string getUsername() const;
