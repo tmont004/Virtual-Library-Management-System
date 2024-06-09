@@ -5,9 +5,14 @@
 #include <iostream>
 #include <string>
 #include "LibrarySystem.h"
+#include "welcomepage.hpp" // logic for the welcome page
+
 
 // Main function: Entry point of the program
 int main() {
+
+    runUserInterface(); // welcome page
+    
     // Create a LibrarySystem object
     LibrarySystem library;
     // Run the library system
