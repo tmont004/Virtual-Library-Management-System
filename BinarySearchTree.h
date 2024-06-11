@@ -42,12 +42,16 @@ public:
     // Leaf/node count from root could be used to help aid in efficient Big-O algorithm sorting evaluations?
     int treeNodeCount() const;
     int treeLeavesCount() const;
+    int height(BSTNode *p) const;
+    int max(int x, int y) const;
     //-------------------------------------------------------------------------------------------------------
     //...
 
 
     //----------------------------------------------------
     // Helping prevent memory leaks and dangling pointers.
+    void destroy(BSTNode* &p);
+
     void destroyTree();            // Will delete nodes & set to NULL/nullptr before rearrangement/shuffling and deallocate memory for future dereferencing.
 
     virtual void insert(const Book* book insertItem) = 0;        // I am not sure if the formal parameter class type/template/data type is correct.
