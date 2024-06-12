@@ -7,11 +7,15 @@
 #include "LibrarySystem.h"
 #include "welcomepage.hpp" // logic for the welcome page
 
+string filename = "userDatabase.json";
 
 // Main function: Entry point of the program
 int main() {
-
-    runUserInterface(); // welcome page
+    
+    // Create the UserRegistry instance with the specified file
+    UserRegistry userRegistry(filename);
+    
+    runUserInterface(userRegistry); // welcome page
     
     // Create a LibrarySystem object
     LibrarySystem library;
