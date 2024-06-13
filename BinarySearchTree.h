@@ -22,11 +22,13 @@ private:
     void addBook(BSTNode*& node, Book* book);
     void inOrderTraversal(BSTNode* node) const;
     BSTNode* findBook(BSTNode* node, std::string isbn) const;
+    BSTNode* removeBook(BSTNode* node, std::string isbn);
+    BSTNode* findMin(BSTNode* node) const;
 
 public:
     BookBST();
     void addBook(Book* book);
-    void removeBook(Book* book);
+    void removeBook(std::string isbn);
     void displayBooks() const;
     Book* searchBook(std::string isbn) const;
 

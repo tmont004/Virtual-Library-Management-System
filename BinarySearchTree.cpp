@@ -25,7 +25,43 @@ void BookBST::addBook(Book* book) {
     addBook(root, book);
 }
 
-void BookBST::removeBook()
+BSTNode* BookBST::findMin(BSTNode* node) const {
+    while (node->left != nullptr) {
+        node = node->left;
+    }
+    return node;
+}
+
+BSTNode* BookBST::removeBook(BSTNode* node, std::string isbn) {
+    if (node == nullptr) return node;
+    
+    if (isbn < node->book->isbn) {
+        node->left = removeBook(node->left, isbn);
+    } else if (isbn > node->book->isbn) {
+        node->right = removeBook(node->right, isbn);
+    } else {
+        // Node with only one child or no child
+        if (node->left == nullptr) {
+            BSTNode* temp = node->right;
+            delete node;
+            return temp;
+        } else if (node->right == nullptr) {
+            BSTNode* temp = node->left;
+            delete node;
+            return temp;
+        }
+        
+        // Node with two children
+        BSTNode* temp = findMin(node->right);
+        node->book = temp->book;
+        node->right = removeBook(node->right, temp->book->isbn);
+    }
+    return node;
+}
+
+void BookBST::removeBook(std::string isbn) {
+    root = removeBook(root, isbn);
+}
 
 void BookBST::inOrderTraversal(BSTNode* node) const {
     if (node == nullptr) return;
