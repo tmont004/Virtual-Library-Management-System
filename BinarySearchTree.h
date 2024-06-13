@@ -26,6 +26,7 @@ private:
 public:
     BookBST();
     void addBook(Book* book);
+    void removeBook(Book* book);
     void displayBooks() const;
     Book* searchBook(std::string isbn) const;
 
@@ -53,10 +54,6 @@ public:
     void destroy(BSTNode* &p);
 
     void destroyTree();            // Will delete nodes & set to NULL/nullptr before rearrangement/shuffling and deallocate memory for future dereferencing.
-
-    virtual void insert(const Book* book insertItem) = 0;        // I am not sure if the formal parameter class type/template/data type is correct.
-
-    virtual void deleteNode(const Book* book deleteItem) = 0;
 
     ~BookBST();
 //----------------------------------------------------------------

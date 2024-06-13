@@ -25,6 +25,8 @@ void BookBST::addBook(Book* book) {
     addBook(root, book);
 }
 
+void BookBST::removeBook()
+
 void BookBST::inOrderTraversal(BSTNode* node) const {
     if (node == nullptr) return;
     inOrderTraversal(node->left);
