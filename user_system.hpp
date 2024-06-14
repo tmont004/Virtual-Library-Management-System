@@ -90,6 +90,6 @@ public:
 string captureUserAction(); // From welcomepage.hpp
 
 // Function to handle the user interface logic
-void runUserInterface(UserRegistry& userRegistry); // From welcomepage.hpp
+bool runUserInterface(UserRegistry& userRegistry); // From welcomepage.hpp
 
 #endif // USER_SYSTEM_HPP

@@ -141,14 +141,22 @@ string captureUserAction() {
 }
 
 // Function to handle the user interface logic
-void runUserInterface(UserRegistry& userRegistry) {
+// Function to handle the user interface logic
+bool runUserInterface(UserRegistry& userRegistry) {
     WelcomePage welcomePage(userRegistry);
-    while (true) {
+
+    bool isLoggedIn = false;
+    bool running = true;
+
+    while (running) {
         string action = captureUserAction();
         if (action == "login") {
-            welcomePage.inputCredentials();
+            welcomePage.inputCredentials(); //just caputres the username and password
             if (welcomePage.authenticate()) {
+                isLoggedIn = true;
                 cout << "Login successful." << endl;
+                
+                running = false;
             } else {
                 cout << "Login failed." << endl;
             }
@@ -173,4 +181,7 @@ void runUserInterface(UserRegistry& userRegistry) {
             cout << "Invalid action." << endl;
         }
     }
+
+   
+    return isLoggedIn;
 }

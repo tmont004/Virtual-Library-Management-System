@@ -15,7 +15,12 @@ int main() {
     // Create the UserRegistry instance with the specified file
     UserRegistry userRegistry(filename);
     
-    runUserInterface(userRegistry); // welcome page
+     
+        //this runs the user interface and this function returns a bool value
+     if (runUserInterface(userRegistry) == true) {
+        cout << "welcome" << endl;
+        cout << "pretend this is the library system" << endl;
+    }
     
     // Create a LibrarySystem object
     LibrarySystem library;
