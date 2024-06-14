@@ -36,8 +36,8 @@ void UserRegistry::loadUsersFromJSON() {
 }
 
 void UserRegistry::saveUsersToJSON() const {
-    ofstream outFile(filename);
-    if (outFile.is_open()) {
+    ofstream outFile(filename); //this line attempts to open the json file
+    if (outFile.is_open()) { // this needs a try catch to not break the program 
         json j;
         for (const auto& pair : users) {
             j[pair.first] = {
@@ -53,6 +53,8 @@ void UserRegistry::saveUsersToJSON() const {
         }
         outFile << j.dump(4);
         outFile.close();
+    } else {
+        cout << "There was a problem accessing the db, please try again" << endl;
     }
 }
 
