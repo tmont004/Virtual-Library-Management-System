@@ -1,3 +1,6 @@
+//this db uses filename as a placeholder, however, filename is already a placeholder for userDatabase
+//Ill replace filename with filename2 and define it in the main function
+//ill add a .json file to correspond with this
 #include "bookdatabase.h"
 #include <fstream>
 #include <iostream>
@@ -13,8 +16,8 @@ void BookDatabase::removeBook(const std::string &isbn) {
 }
 
 // Load book data from a JSON file
-void BookDatabase::loadFromFile(const std::string &filename) {
-    std::ifstream file(filename);
+void BookDatabase::loadFromFile(const std::string &filename2) {
+    std::ifstream file(filename2);
     if (file.is_open()) {
         json j;
         file >> j;
@@ -26,12 +29,12 @@ void BookDatabase::loadFromFile(const std::string &filename) {
 }
 
 // Save book data to a JSON file
-void BookDatabase::saveToFile(const std::string &filename) const {
+void BookDatabase::saveToFile(const std::string &filename2) const {
     json j;
     for (const auto &book : books) {
         j.push_back(book.toJson());
     }
-    std::ofstream file(filename);
+    std::ofstream file(filename2);
     if (file.is_open()) {
         file << j.dump(4); // Dump with 4 spaces for indentation
     }

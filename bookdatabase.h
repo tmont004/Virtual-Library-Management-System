@@ -18,10 +18,10 @@ public:
     void removeBook(const std::string &isbn);
 
     // Load book data from a JSON file
-    void loadFromFile(const std::string &filename);
+    void loadFromFile(const std::string &filename2);
 
     // Save book data to a JSON file
-    void saveToFile(const std::string &filename) const;
+    void saveToFile(const std::string &filename2) const;
 
     // Print details of all books in the database
     void printAllBooks() const;

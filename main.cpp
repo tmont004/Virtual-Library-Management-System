@@ -8,6 +8,7 @@
 #include "user_system.hpp" // logic for the welcome page
 
 string filename = "userDatabase.json";
+string filename2 = "bookDB.json"
 
 // Main function: Entry point of the program
 int main() {
