@@ -3,20 +3,29 @@
 //Date:  06/29/2024
 
 #include <iostream>
-#include <iomanip>
-#include <vector>
 #include <string>
+#include "LibrarySystem.h"
+#include "user_system.hpp" // logic for the welcome page
 
-using namespace std;
+string filename = "userDatabase.json";
+string filename2 = "bookDB.json"
 
+// Main function: Entry point of the program
 int main() {
-
-    // This is William. I think I am in the "Development" branch. Testing to see if commit and push are working from VS.
     
-    vector<string> msg {"Hello", "C++", "World", "from", "VS Code", "and the C++ extension!"};
-
-    for (const string& word : msg) {
-        cout << word << " ";
+    // Create the UserRegistry instance with the specified file
+    UserRegistry userRegistry(filename);
+    // Create a LibrarySystem object
+    LibrarySystem library;
+    
+     
+        //this runs the user interface and this function returns a bool value
+     if (runUserInterface(userRegistry) == true) {
+          
+        // Run the library system
+        library.run();
     }
-    cout << endl;
+    
+    
+    return 0;
 }
