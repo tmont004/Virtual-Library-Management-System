@@ -6,13 +6,23 @@
 #include <queue>
 #include "user_system.hpp" // user.h file is depracated, changed it
 #include "Book.h"
+#include "BinarySearchTree.h"
 
 // LibrarySystem class definition
 class LibrarySystem {
 public:
     // Method to run the library system
     void run();
+
+    void addBook();  //(need to be updated)
+    void removeBook();  //(need to be updated)
+    void updateBook();  //(need to be updated)
+    void searchBooks();  //(need to be updated)
+
 private:
+
+    BookBST bookTree; // Use BookBST for managing books
+
     std::unordered_map<std::string, User> users;  // HashMap to store users (need to be updated)
     std::unordered_map<std::string, Book> books;  // HashMap to store books (need to be updated)
     std::queue<std::string> checkoutQueue;        // Queue to manage book borrowing (need to be updated)
@@ -29,11 +39,7 @@ private:
     // User and book management methods
     void login();  //(need to be updated)
     void registerUser();  //(need to be updated)
-    void addBook();  //(need to be updated)
-    void removeBook();  //(need to be updated)
-    void removeBook();  //(need to be updated)
-    void updateBook();  //(need to be updated)
-    void searchBooks();  //(need to be updated)
+    
     void borrowBook(const std::string& username);  //(need to be updated)
     void returnBook(const std::string& username);  //(need to be updated)
 

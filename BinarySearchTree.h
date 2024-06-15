@@ -5,14 +5,13 @@
 #include <iostream>
 #include "Book.h"
 
-
 class BSTNode {
 public:
     Book* book;
     BSTNode* left;
     BSTNode* right;
 
-    BSTNode(Book* book);
+    explicit BSTNode(Book* book) : book(book), left(nullptr), right(nullptr) {}
 };
 
 class BookBST {
@@ -21,48 +20,36 @@ private:
 
     void addBook(BSTNode*& node, Book* book);
     void inOrderTraversal(BSTNode* node) const;
-    BSTNode* findBook(BSTNode* node, std::string isbn) const;
-    BSTNode* removeBook(BSTNode* node, std::string isbn);
+    BSTNode* findBook(BSTNode* node, const std::string& isbn) const;
+    BSTNode* removeBook(BSTNode* node, const std::string& isbn);
     BSTNode* findMin(BSTNode* node) const;
+
+    // Utility functions
+    bool isEmpty(BSTNode* node) const;
+    int treeHeight(BSTNode* node) const;
+    int treeNodeCount(BSTNode* node) const;
+    int treeLeavesCount(BSTNode* node) const;
+    int height(BSTNode* node) const;
+    int max(int x, int y) const;
+
+    // Memory management
+    void destroy(BSTNode*& node);
+    void destroyTree(BSTNode* node);
 
 public:
     BookBST();
+    ~BookBST();
+
     void addBook(Book* book);
-    void removeBook(std::string isbn);
+    void removeBook(const std::string& isbn);
     void displayBooks() const;
-    Book* searchBook(std::string isbn) const;
-
-
-//----------------------------------------------------------------
-// Public methods con't. for review.
+    Book* searchBook(const std::string& isbn) const;
 
     bool isEmpty() const;
     int treeHeight() const;
-    //...
-
-
-    //-------------------------------------------------------------------------------------------------------
-    // Leaf/node count from root could be used to help aid in efficient Big-O algorithm sorting evaluations?
     int treeNodeCount() const;
     int treeLeavesCount() const;
-    int height(BSTNode *p) const;
-    int max(int x, int y) const;
-    //-------------------------------------------------------------------------------------------------------
-    //...
-
-
-    //----------------------------------------------------
-    // Helping prevent memory leaks and dangling pointers.
-    void destroy(BSTNode* &p);
-
-    void destroyTree();            // Will delete nodes & set to NULL/nullptr before rearrangement/shuffling and deallocate memory for future dereferencing.
-
-    ~BookBST();
-//----------------------------------------------------------------
-
-
-
-
+    void destroyTree();
 };
 
-#endif //BINARY_SEARCH_TREE_H
+#endif // BINARY_SEARCH_TREE_H

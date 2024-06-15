@@ -10,12 +10,53 @@ void LibrarySystem::run() {
 
 // Method to load data from files
 void LibrarySystem::loadFromFile() {
-    // TODO: Implement file loading for users and books
+    std::ifstream userFile("userDatabase.json");
+    std::ifstream bookFile("bookDB.json");
+
+    if (userFile.is_open() && bookFile.is_open()) {
+        nlohmann::json userData, bookData;
+        userFile >> userData;
+        bookFile >> bookData;
+
+        for (auto& [key, value] : userData.items()) {
+            users[key] = User(value["username"], value["password"], value["isAdmin"]);
+        }
+
+        for (auto& [key, value] : bookData.items()) {
+            books[key] = Book(value["title"], value["author"], value["isbn"], value["copiesInStock"]);
+        }
+
+        userFile.close();
+        bookFile.close();
+    } else {
+        std::cerr << "Error opening files for loading data.\n";
+    }
 }
 
 // Method to save data to files
 void LibrarySystem::saveToFile() {
-    // TODO: Implement file saving for users and books
+    std::ofstream userFile("userDatabase.json");
+    std::ofstream bookFile("bookDB.json");
+
+    if (userFile.is_open() && bookFile.is_open()) {
+        nlohmann::json userData, bookData;
+
+        for (const auto& [key, user] : users) {
+            userData[key] = { {"username", user.getUsername()}, {"password", user.getPassword()}, {"isAdmin", user.isAdmin()} };
+        }
+
+        for (const auto& [key, book] : books) {
+            bookData[key] = { {"title", book.getTitle()}, {"author", book.getAuthor()}, {"isbn", book.getISBN()}, {"copiesInStock", book.getCopiesInStock()} };
+        }
+
+        userFile << userData.dump(4);
+        bookFile << bookData.dump(4);
+
+        userFile.close();
+        bookFile.close();
+    } else {
+        std::cerr << "Error opening files for saving data.\n";
+    }
 }
 
 // Method to display pre-login menu
@@ -136,21 +177,31 @@ void LibrarySystem::adminMenu() {
 // Method to add a book to the library
 void LibrarySystem::addBook() {
     std::string title, author, isbn;
-    std::cout << "Enter book title: ";
-    std::cin >> title;
-    std::cout << "Enter author: ";
-    std::cin >> author;
-    std::cout << "Enter ISBN: ";
-    std::cin >> isbn;
+    int copiesInStock;
 
-    // Check if the book with the given ISBN already exists
-    if (books.find(isbn) == books.end()) {
-        books[isbn] = Book(title, author, isbn);  // Add the new book
-        std::cout << "Book added successfully.\n";
-    } else {
+    std::cin.ignore(); // To clear the newline character left by previous input
+    std::cout << "Enter book title: ";
+    std::getline(std::cin, title);
+    std::cout << "Enter author: ";
+    std::getline(std::cin, author);
+    std::cout << "Enter ISBN: ";
+    std::getline(std::cin, isbn);
+    std::cout << "Enter number of copies: ";
+    std::cin >> copiesInStock;
+
+    // Create a new Book object
+    Book* newBook = new Book(title, author, isbn, copiesInStock);
+
+    // Check if the book with the given ISBN already exists using search
+    if (bookTree.searchBook(isbn)) {
         std::cout << "Book with this ISBN already exists.\n";
+        delete newBook; // Avoid memory leak
+    } else {
+        bookTree.addBook(newBook); // Add the new book to the BST
+        std::cout << "Book added successfully.\n";
     }
 }
+
 
 // Method to remove a book from the library
 void LibrarySystem::removeBook() {
@@ -166,17 +217,31 @@ void LibrarySystem::removeBook() {
         std::cout << "Book not found.\n";
     }
 }
-/*
+
 // Method to update book information
 void LibrarySystem::updateBook() {
     std::string isbn, title, author;
+    int copiesInStock;
     std::cout << "Enter ISBN of the book to update: ";
     std::cin >> isbn;
 
-    // Check if the book exists
     if (books.find(isbn) != books.end()) {
-        std
-*/
+        std::cout << "Enter new title: ";
+        std::cin.ignore(); // Ignore the newline character left by previous input
+        std::getline(std::cin, title);
+        std::cout << "Enter new author: ";
+        std::getline(std::cin, author);
+        std::cout << "Enter number of copies in stock: ";
+        std::cin >> copiesInStock;
+
+        books[isbn].setTitle(title);
+        books[isbn].setAuthor(author);
+        books[isbn].setCopiesInStock(copiesInStock);
+        std::cout << "Book updated successfully.\n";
+    } else {
+        std::cout << "Book not found.\n";
+    }
+}
 
 
 //-------------------------------------------------------
