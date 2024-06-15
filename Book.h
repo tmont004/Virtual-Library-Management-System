@@ -9,7 +9,7 @@ using json = nlohmann::json; // Alias for JSON namespace
 class Book {
 public:
     // Constructor to initialize a Book object with provided title, author, and ISBN
-    Book(const std::string &title = "", const std::string &author = "", const std::string &isbn = "");
+    Book(const std::string& title, const std::string& author, const std::string& isbn, int copiesInStock);
 
     // Convert Book object to JSON format
     json toJson() const;
@@ -20,11 +20,20 @@ public:
     // Print details of the Book object
     void print() const;
 
-    std::string title; // Title of the book
-    std::string author; // Author of the book
-    std::string isbn; // ISBN (International Standard Book Number) of the book
-    int copiesInStock = 0;
-    bool isBorrowed; // Checks to see if book is available for borrowing
+    std::string getTitle() const;
+    std::string getAuthor() const;
+    std::string getISBN() const;
+    int getCopiesInStock() const;
+
+    bool operator<(const Book& other) const;
+    bool operator==(const Book& other) const;
+
+private:
+    std::string title;
+    std::string author;
+    std::string isbn;
+    int copiesInStock;
+
 };
 
 #endif
