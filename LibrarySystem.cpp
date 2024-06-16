@@ -42,7 +42,7 @@ void LibrarySystem::saveToFile() {
         nlohmann::json userData, bookData;
 
         for (const auto& [key, user] : users) {
-            userData[key] = { {"username", user.getUsername()}, {"password", user.getPassword()}, {"isAdmin", user.isAdmin()} };
+            userData[key] = { {"username", user.getUsername()}, {"password", user.getPassword()}, {"isAdmin", user.isAdminUser()} };
         }
 
         for (const auto& [key, book] : books) {

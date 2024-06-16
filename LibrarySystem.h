@@ -55,7 +55,7 @@ private:
     int getNoOfCopiesInStock() const;
     bool checkTitle(std::string title);            // ADT to compliment searchBooks()?
     void updateInStock(int num);
-    void setCopiesInStock(int num);
+    // void setCopiesInStock(int num);
 
 };
 

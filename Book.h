@@ -8,6 +8,7 @@ using json = nlohmann::json; // Alias for JSON namespace
 
 class Book {
 public:
+    Book() : copiesInStock(0) {}
     // Constructor to initialize a Book object with provided title, author, and ISBN
     Book(const std::string& title, const std::string& author, const std::string& isbn, int copiesInStock);
 
