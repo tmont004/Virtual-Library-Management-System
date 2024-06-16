@@ -25,6 +25,10 @@ public:
     std::string getISBN() const;
     int getCopiesInStock() const;
 
+    void setTitle(const std::string& title);
+    void setAuthor(const std::string& author);
+    void setCopiesInStock(int copies);
+
     bool operator<(const Book& other) const;
     bool operator==(const Book& other) const;
 
