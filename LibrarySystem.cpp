@@ -19,7 +19,7 @@ void LibrarySystem::loadFromFile() {
         bookFile >> bookData;
 
         for (auto& [key, value] : userData.items()) {
-            users[key] = User(value["username"], value["password"], value["isAdmin"]);
+            users[key] = User(value["username"], value["firstName"], value["lastName"], value["phoneNumber"], value["address"], value["birthday"], value["password"], value["isAdmin"]);
         }
 
         for (auto& [key, value] : bookData.items()) {
@@ -243,6 +243,11 @@ void LibrarySystem::updateBook() {
     }
 }
 
+bool LibrarySystem::operator==(const std::string &title) const {
+    // Assuming the class has a member function or variable to get the title.
+    return this->getTitle() == title;
+}
+
 
 //-------------------------------------------------------
 int LibrarySystem::getNoOfCopiesInStock() const
@@ -250,9 +255,14 @@ int LibrarySystem::getNoOfCopiesInStock() const
     return copiesInStock;                        // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
 }
 
-bool LibrarySystem::checkTitle(std::string title)
-{
-    return(*this == title)                        // *this required since formal parameter matches "title" from Book.h? *this will need scope :: from Book.h?
+bool LibrarySystem::checkTitle(std::string title) {
+    // This function should probably check titles of books within the LibrarySystem's collection
+    for (const auto& pair : books) {
+        if (pair.second.getTitle() == title) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void LibrarySystem::updateInStock(int num)
