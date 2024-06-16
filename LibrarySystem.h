@@ -23,8 +23,8 @@ public:
     void borrowBook(const std::string& username);  //(need to be updated)
     void returnBook(const std::string& username);  //(need to be updated)
     void searchBooks();  //(need to be updated)
-    void registerUser();  //(need to be updated)
-    void login();  //(need to be updated)
+    // void registerUser();  //(need to be updated)
+    // void login();  //(need to be updated)
     std::string getTitle() const; // this isnt defined
 
     void setTitle(const std::string &title);

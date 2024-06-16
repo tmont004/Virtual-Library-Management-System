@@ -4,7 +4,7 @@
 // Method to run the library system
 void LibrarySystem::run() {
     loadFromFile();  // Load data from files
-    preLoginMenu();  // Display pre-login menu
+    // preLoginMenu();  // Display pre-login menu
     saveToFile();    // Save data to files
 }
 
@@ -60,27 +60,27 @@ void LibrarySystem::saveToFile() {
 }
 
 // Method to display pre-login menu
-void LibrarySystem::preLoginMenu() {
-    int choice;
-    do {
-        std::cout << "Welcome to the Virtual Library Management System\n";
-        std::cout << "1. Login\n2. Register\n3. Exit\n";
-        std::cin >> choice;
-        switch (choice) {
-            case 1:
-                login();  // Handle login
-                break;
-            case 2:
-                registerUser();  // Handle user registration
-                break;
-            case 3:
-                std::cout << "Goodbye!\n";
-                break;
-            default:
-                std::cout << "Invalid choice. Try again.\n";
-        }
-    } while (choice != 3);
-}
+// void LibrarySystem::preLoginMenu() {
+//     int choice;
+//     do {
+//         std::cout << "Welcome to the Virtual Library Management System\n";
+//         std::cout << "1. Login\n2. Register\n3. Exit\n";
+//         std::cin >> choice;
+//         switch (choice) {
+//             case 1:
+//                 login();  // Handle login
+//                 break;
+//             case 2:
+//                 registerUser();  // Handle user registration
+//                 break;
+//             case 3:
+//                 std::cout << "Goodbye!\n";
+//                 break;
+//             default:
+//                 std::cout << "Invalid choice. Try again.\n";
+//         }
+//     } while (choice != 3);
+// }
 /*
 // Method to handle user login
 void LibrarySystem::login() {
