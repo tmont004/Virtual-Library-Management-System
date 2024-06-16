@@ -17,8 +17,15 @@ public:
     void addBook();  //(need to be updated)
     void removeBook();  //(need to be updated)
     void updateBook();  //(need to be updated)
-    void searchBooks();  //(need to be updated)
+    
     bool operator==(const std::string &title) const;
+
+    void borrowBook(const std::string& username);  //(need to be updated)
+    void returnBook(const std::string& username);  //(need to be updated)
+    void searchBooks();  //(need to be updated)
+    void registerUser();  //(need to be updated)
+    void login();  //(need to be updated)
+    std::string getTitle() const; // this isnt defined
 
     void setTitle(const std::string &title);
     void setAuthor(const std::string &author);
@@ -42,14 +49,14 @@ private:
     void adminMenu();  //(need to be updated)
     
     // User and book management methods
-    void login();  //(need to be updated)
-    void registerUser();  //(need to be updated)
-    std::string getTitle() const;
+    
+    
+    
     std::string title;
     std::string author;
     int copiesInStock;
-    void borrowBook(const std::string& username);  //(need to be updated)
-    void returnBook(const std::string& username);  //(need to be updated)
+    
+    
 
     // Additional optional functions
     int getNoOfCopiesInStock() const;
