@@ -1,4 +1,5 @@
 #include "LibrarySystem.h"
+#include "BinarySearchTree.h"
 #include <fstream>
 
 // Method to run the library system
@@ -59,66 +60,23 @@ void LibrarySystem::saveToFile() {
     }
 }
 
-// Method to display pre-login menu
-// void LibrarySystem::preLoginMenu() {
-//     int choice;
-//     do {
-//         std::cout << "Welcome to the Virtual Library Management System\n";
-//         std::cout << "1. Login\n2. Register\n3. Exit\n";
-//         std::cin >> choice;
-//         switch (choice) {
-//             case 1:
-//                 login();  // Handle login
-//                 break;
-//             case 2:
-//                 registerUser();  // Handle user registration
-//                 break;
-//             case 3:
-//                 std::cout << "Goodbye!\n";
-//                 break;
-//             default:
-//                 std::cout << "Invalid choice. Try again.\n";
-//         }
-//     } while (choice != 3);
-// }
-/*
-// Method to handle user login
-void LibrarySystem::login() {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    // Check if the user exists and the password is correct
-    if (users.find(username) != users.end() && users[username].checkPassword(password)) {
-        if (users[username].isAdmin()) {
-            adminMenu();  // Display admin menu if the user is an admin
-        } else {
-            userMenu(username);  // Display user menu if the user is a standard user
-        }
-    } else {
-        std::cout << "Invalid username or password.\n";
-    }
+void LibrarySystem::borrowBook(const std::string& bookTitle) {
+    cout << "something" << endl;
 }
 
-// Method to handle user registration
-void LibrarySystem::registerUser() {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    // Check if the username already exists
-    if (users.find(username) == users.end()) {
-        users[username] = User(username, password, false);  // Create a new user
-        std::cout << "Registration successful.\n";
-    } else {
-        std::cout << "Username already exists.\n";
-    }
+void LibrarySystem::returnBook(const std::string& bookTitle) {
+    cout << "something else" << endl;
 }
-*/
+
+void LibrarySystem::searchBooks() {
+    cout << "another something else" << endl;
+}
+
+std::string LibrarySystem::getTitle() const {
+    std::string title = "a title";
+    return title;
+}
+
 // Method to display user menu
 void LibrarySystem::userMenu(const std::string& username) {
     int choice;
