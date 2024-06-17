@@ -43,6 +43,26 @@ BSTNode* BookBST::findBook(BSTNode* node, const std::string& isbn) const {
     }
 }
 
+// Borrow Book (Public)
+bool BookBST::borrowBook(const std::string& isbn) {
+    Book* book = searchBook(isbn);
+    if (book && book->getCopiesInStock() > 0) {
+        book->setCopiesInStock(book->getCopiesInStock() - 1);
+        return true;
+    }
+    return false;
+}
+
+// Return Book (Public)
+bool BookBST::returnBook(const std::string& isbn) {
+    Book* book = searchBook(isbn);
+    if (book) {
+        book->setCopiesInStock(book->getCopiesInStock() + 1);
+        return true;
+    }
+    return false;
+}
+
 // Remove Book (Public)
 void BookBST::removeBook(const std::string& isbn) {
     root = removeBook(root, isbn);
@@ -147,24 +167,23 @@ int BookBST::treeLeavesCount() const {
 int BookBST::treeLeavesCount(BSTNode* node) const {
     if (!node) {
         return 0;
-    }
-    if (!node->left && !node->right) {
+    } else if (!node->left && !node->right) {
         return 1;
+    } else {
+        return treeLeavesCount(node->left) + treeLeavesCount(node->right);
     }
-    return treeLeavesCount(node->left) + treeLeavesCount(node->right);
 }
 
 // Destroy Tree (Public)
 void BookBST::destroyTree() {
-    destroy(root);
+    destroyTree(root);
 }
 
 // Destroy Tree (Private)
-void BookBST::destroy(BSTNode*& node) {
+void BookBST::destroyTree(BSTNode* node) {
     if (node) {
-        destroy(node->left);
-        destroy(node->right);
+        destroyTree(node->left);
+        destroyTree(node->right);
         delete node;
-        node = nullptr;
     }
 }

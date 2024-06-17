@@ -45,6 +45,9 @@ public:
     void displayBooks() const;
     Book* searchBook(const std::string& isbn) const;
 
+    bool borrowBook(const std::string& isbn);
+    bool returnBook(const std::string& isbn);
+
     bool isEmpty() const;
     int treeHeight() const;
     int treeNodeCount() const;

@@ -38,7 +38,6 @@ private:
     std::string author;
     std::string isbn;
     int copiesInStock;
-
 };
 
-#endif
+#endif // BOOK_H
