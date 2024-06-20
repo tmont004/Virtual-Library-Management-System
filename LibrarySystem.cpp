@@ -1,3 +1,6 @@
+//need to make an add a book method and revise some of these loops
+
+
 #include "LibrarySystem.h"
 #include "BinarySearchTree.h"
 #include <fstream>
