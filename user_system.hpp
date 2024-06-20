@@ -12,26 +12,19 @@ using namespace std;
 class User {
 private:
     string username;
-    string firstName;
-    string lastName;
-    string phoneNumber;
-    string address;
-    string birthday;
     string password;
     bool isAdmin;
 
 public:
     User() : isAdmin(false) {}  // Default constructor
 
-    User(string uname, string fname, string lname, string phone, string addr, string bday, string pass, bool admin)
-        : username(uname), firstName(fname), lastName(lname), phoneNumber(phone), address(addr), birthday(bday), password(pass), isAdmin(admin) {}
+    User(const string& uname, const string& pass, bool admin)
+        : username(uname), password(pass), isAdmin(false) {}
+
+        
 
     string getUsername() const { return username; }
-    string getFirstName() const { return firstName; }
-    string getLastName() const { return lastName; }
-    string getPhoneNumber() const { return phoneNumber; }
-    string getAddress() const { return address; }
-    string getBirthday() const { return birthday; }
+    
     string getPassword() const { return password; }
     bool checkPassword(string pass) const { return password == pass; }
     bool isAdminUser() const { return isAdmin; }

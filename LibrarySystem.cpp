@@ -1,12 +1,28 @@
 #include "LibrarySystem.h"
 #include "BinarySearchTree.h"
 #include <fstream>
+#include <iostream>
+#include "json.hpp"
 
 // Method to run the library system
 void LibrarySystem::run() {
     loadFromFile();  // Load data from files
-    // preLoginMenu();  // Display pre-login menu
+    userOrAdminMenu(); // Display menu after successful login
     saveToFile();    // Save data to files
+}
+
+// Method to display the user or admin menu after login
+void LibrarySystem::userOrAdminMenu() {
+    // Assuming the login details are already validated before calling this function
+    std::string username; // You should pass the username from the login context
+    bool isAdmin = false; // You should get this information from the login context
+
+    // Check if the user is an admin or a regular user
+    if (isAdmin) {
+        adminMenu();
+    } else {
+        userMenu(username);
+    }
 }
 
 // Method to load data from files
@@ -20,7 +36,7 @@ void LibrarySystem::loadFromFile() {
         bookFile >> bookData;
 
         for (auto& [key, value] : userData.items()) {
-            users[key] = User(value["username"], value["firstName"], value["lastName"], value["phoneNumber"], value["address"], value["birthday"], value["password"], value["isAdmin"]);
+            users[key] = User(value["username"], value["password"], value["isAdmin"]);
         }
 
         for (auto& [key, value] : bookData.items()) {
@@ -61,15 +77,15 @@ void LibrarySystem::saveToFile() {
 }
 
 void LibrarySystem::borrowBook(const std::string& bookTitle) {
-    cout << "something" << endl;
+    std::cout << "Borrowing book: " << bookTitle << std::endl;
 }
 
 void LibrarySystem::returnBook(const std::string& bookTitle) {
-    cout << "something else" << endl;
+    std::cout << "Returning book: " << bookTitle << std::endl;
 }
 
 void LibrarySystem::searchBooks() {
-    cout << "another something else" << endl;
+    std::cout << "Searching for books..." << std::endl;
 }
 
 std::string LibrarySystem::getTitle() const {
@@ -134,6 +150,7 @@ void LibrarySystem::adminMenu() {
 
 // Method to add a book to the library
 void LibrarySystem::addBook() {
+    std::cout << "Enter book information\n";
     std::string title, author, isbn;
     int copiesInStock;
 
@@ -148,18 +165,16 @@ void LibrarySystem::addBook() {
     std::cin >> copiesInStock;
 
     // Create a new Book object
-    Book* newBook = new Book(title, author, isbn, copiesInStock);
+    Book newBook(title, author, isbn, copiesInStock);
 
     // Check if the book with the given ISBN already exists using search
-    if (bookTree.searchBook(isbn)) {
+    if (books.find(isbn) != books.end()) {
         std::cout << "Book with this ISBN already exists.\n";
-        delete newBook; // Avoid memory leak
     } else {
-        bookTree.addBook(newBook); // Add the new book to the BST
+        books[isbn] = newBook; // Add the new book to the map
         std::cout << "Book added successfully.\n";
     }
 }
-
 
 // Method to remove a book from the library
 void LibrarySystem::removeBook() {
@@ -206,14 +221,11 @@ bool LibrarySystem::operator==(const std::string &title) const {
     return this->getTitle() == title;
 }
 
-
-//-------------------------------------------------------
-int LibrarySystem::getNoOfCopiesInStock() const
-{
-    return copiesInStock;                        // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
+int LibrarySystem::getNoOfCopiesInStock() const {
+    return copiesInStock;  // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
 }
 
-bool LibrarySystem::checkTitle(std::string title) {
+bool LibrarySystem::checkTitle(const std::string& title) {
     // This function should probably check titles of books within the LibrarySystem's collection
     for (const auto& pair : books) {
         if (pair.second.getTitle() == title) {
@@ -223,12 +235,11 @@ bool LibrarySystem::checkTitle(std::string title) {
     return false;
 }
 
-void LibrarySystem::updateInStock(int num)
-{
+void LibrarySystem::updateInStock(int num) {
     copiesInStock += num;
 }
 
-void LibrarySystem::setCopiesInStock(int num)
-{
+void LibrarySystem::setCopiesInStock(int num) {
     copiesInStock = num;
 }
+

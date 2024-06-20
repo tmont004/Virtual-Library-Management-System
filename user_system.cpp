@@ -21,11 +21,6 @@ UserRegistry::UserRegistry(string filename) : filename(filename) {
             string uname = element.value().value("username", "");
             User user(
                 uname,
-                element.value().value("firstName", ""),
-                element.value().value("lastName", ""),
-                element.value().value("phoneNumber", ""),
-                element.value().value("address", ""),
-                element.value().value("birthday", ""),
                 element.value().value("password", ""),
                 element.value().value("isAdmin", false)
             );
@@ -118,7 +113,7 @@ bool WelcomePage::createAccount(const string& tempUsername, const string& tempPa
     if (userRegistry.isUsernameTaken(tempUsername)) {
         return false;
     }
-    User newUser(tempUsername, "", "", "", "", "", tempPassword, false);
+    User newUser(tempUsername, tempPassword, false);
     userRegistry.addUser(newUser);
     return true;
 }
