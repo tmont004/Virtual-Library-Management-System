@@ -1,11 +1,31 @@
+//need to make an add a book method and revise some of these loops
+
+
 #include "LibrarySystem.h"
+#include "BinarySearchTree.h"
 #include <fstream>
+#include <iostream>
+#include "json.hpp"
 
 // Method to run the library system
 void LibrarySystem::run() {
     loadFromFile();  // Load data from files
-    preLoginMenu();  // Display pre-login menu
+    userOrAdminMenu(); // Display menu after successful login
     saveToFile();    // Save data to files
+}
+
+// Method to display the user or admin menu after login
+void LibrarySystem::userOrAdminMenu() {
+    // Assuming the login details are already validated before calling this function
+    std::string username; // You should pass the username from the login context
+    bool isAdmin = false; // You should get this information from the login context
+
+    // Check if the user is an admin or a regular user
+    if (isAdmin) {
+        adminMenu();
+    } else {
+        userMenu(username);
+    }
 }
 
 // Method to load data from files
@@ -19,7 +39,7 @@ void LibrarySystem::loadFromFile() {
         bookFile >> bookData;
 
         for (auto& [key, value] : userData.items()) {
-            users[key] = User(value["username"], value["firstName"], value["lastName"], value["phoneNumber"], value["address"], value["birthday"], value["password"], value["isAdmin"]);
+            users[key] = User(value["username"], value["password"], value["isAdmin"]);
         }
 
         for (auto& [key, value] : bookData.items()) {
@@ -59,66 +79,23 @@ void LibrarySystem::saveToFile() {
     }
 }
 
-// Method to display pre-login menu
-void LibrarySystem::preLoginMenu() {
-    int choice;
-    do {
-        std::cout << "Welcome to the Virtual Library Management System\n";
-        std::cout << "1. Login\n2. Register\n3. Exit\n";
-        std::cin >> choice;
-        switch (choice) {
-            case 1:
-                login();  // Handle login
-                break;
-            case 2:
-                registerUser();  // Handle user registration
-                break;
-            case 3:
-                std::cout << "Goodbye!\n";
-                break;
-            default:
-                std::cout << "Invalid choice. Try again.\n";
-        }
-    } while (choice != 3);
-}
-/*
-// Method to handle user login
-void LibrarySystem::login() {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    // Check if the user exists and the password is correct
-    if (users.find(username) != users.end() && users[username].checkPassword(password)) {
-        if (users[username].isAdmin()) {
-            adminMenu();  // Display admin menu if the user is an admin
-        } else {
-            userMenu(username);  // Display user menu if the user is a standard user
-        }
-    } else {
-        std::cout << "Invalid username or password.\n";
-    }
+void LibrarySystem::borrowBook(const std::string& bookTitle) {
+    std::cout << "Borrowing book: " << bookTitle << std::endl;
 }
 
-// Method to handle user registration
-void LibrarySystem::registerUser() {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    // Check if the username already exists
-    if (users.find(username) == users.end()) {
-        users[username] = User(username, password, false);  // Create a new user
-        std::cout << "Registration successful.\n";
-    } else {
-        std::cout << "Username already exists.\n";
-    }
+void LibrarySystem::returnBook(const std::string& bookTitle) {
+    std::cout << "Returning book: " << bookTitle << std::endl;
 }
-*/
+
+void LibrarySystem::searchBooks() {
+    std::cout << "Searching for books..." << std::endl;
+}
+
+std::string LibrarySystem::getTitle() const {
+    std::string title = "a title";
+    return title;
+}
+
 // Method to display user menu
 void LibrarySystem::userMenu(const std::string& username) {
     int choice;
@@ -176,6 +153,7 @@ void LibrarySystem::adminMenu() {
 
 // Method to add a book to the library
 void LibrarySystem::addBook() {
+    std::cout << "Enter book information\n";
     std::string title, author, isbn;
     int copiesInStock;
 
@@ -190,18 +168,16 @@ void LibrarySystem::addBook() {
     std::cin >> copiesInStock;
 
     // Create a new Book object
-    Book* newBook = new Book(title, author, isbn, copiesInStock);
+    Book newBook(title, author, isbn, copiesInStock);
 
     // Check if the book with the given ISBN already exists using search
-    if (bookTree.searchBook(isbn)) {
+    if (books.find(isbn) != books.end()) {
         std::cout << "Book with this ISBN already exists.\n";
-        delete newBook; // Avoid memory leak
     } else {
-        bookTree.addBook(newBook); // Add the new book to the BST
+        books[isbn] = newBook; // Add the new book to the map
         std::cout << "Book added successfully.\n";
     }
 }
-
 
 // Method to remove a book from the library
 void LibrarySystem::removeBook() {
@@ -248,14 +224,11 @@ bool LibrarySystem::operator==(const std::string &title) const {
     return this->getTitle() == title;
 }
 
-
-//-------------------------------------------------------
-int LibrarySystem::getNoOfCopiesInStock() const
-{
-    return copiesInStock;                        // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
+int LibrarySystem::getNoOfCopiesInStock() const {
+    return copiesInStock;  // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
 }
 
-bool LibrarySystem::checkTitle(std::string title) {
+bool LibrarySystem::checkTitle(const std::string& title) {
     // This function should probably check titles of books within the LibrarySystem's collection
     for (const auto& pair : books) {
         if (pair.second.getTitle() == title) {
@@ -265,12 +238,11 @@ bool LibrarySystem::checkTitle(std::string title) {
     return false;
 }
 
-void LibrarySystem::updateInStock(int num)
-{
+void LibrarySystem::updateInStock(int num) {
     copiesInStock += num;
 }
 
-void LibrarySystem::setCopiesInStock(int num)
-{
+void LibrarySystem::setCopiesInStock(int num) {
     copiesInStock = num;
 }
+

@@ -12,22 +12,17 @@ UserRegistry::UserRegistry(string filename) : filename(filename) {
     loadUsersFromJSON();
 }
 
-void UserRegistry::loadUsersFromJSON() {
+ void UserRegistry::loadUsersFromJSON() {
     ifstream inFile(filename);
     if (inFile.is_open()) {
         json j;
         inFile >> j;
         for (auto& element : j.items()) {
-            string uname = element.value()["username"];
+            string uname = element.value().value("username", "");
             User user(
                 uname,
-                element.value()["firstName"],
-                element.value()["lastName"],
-                element.value()["phoneNumber"],
-                element.value()["address"],
-                element.value()["birthday"],
-                element.value()["password"],
-                element.value()["isAdmin"]
+                element.value().value("password", ""),
+                element.value().value("isAdmin", false)
             );
             users[uname] = user;
         }
@@ -41,12 +36,13 @@ void UserRegistry::saveUsersToJSON() const {
         json j;
         for (const auto& pair : users) {
             j[pair.first] = {
+                //so it looks like we're having a problem with a value here being passed as null so well comment them out for now
                 {"username", pair.second.getUsername()},
-                {"firstName", pair.second.getFirstName()},
-                {"lastName", pair.second.getLastName()},
-                {"phoneNumber", pair.second.getPhoneNumber()},
-                {"address", pair.second.getAddress()},
-                {"birthday", pair.second.getBirthday()},
+                // {"firstName", pair.second.getFirstName()},
+                // {"lastName", pair.second.getLastName()},
+                // {"phoneNumber", pair.second.getPhoneNumber()},
+                // {"address", pair.second.getAddress()},
+                // {"birthday", pair.second.getBirthday()},
                 {"password", pair.second.getPassword()},
                 {"isAdmin", pair.second.isAdminUser()}
             };
@@ -99,7 +95,7 @@ void UserRegistry::changeUserPassword(string username, string newPassword) {
 }
 
 // WelcomePage class methods
-WelcomePage::WelcomePage(UserRegistry& registry, const string& usr, const string& pswrd)
+WelcomePage::WelcomePage(UserRegistry& registry, const std::string& usr, const std::string& pswrd)
     : userRegistry(registry), username(usr), password(pswrd) {}
 
 void WelcomePage::inputCredentials() {
@@ -117,7 +113,7 @@ bool WelcomePage::createAccount(const string& tempUsername, const string& tempPa
     if (userRegistry.isUsernameTaken(tempUsername)) {
         return false;
     }
-    User newUser(tempUsername, "", "", "", "", "", tempPassword, false);
+    User newUser(tempUsername, tempPassword, false);
     userRegistry.addUser(newUser);
     return true;
 }

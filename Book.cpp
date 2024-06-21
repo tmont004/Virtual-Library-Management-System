@@ -7,7 +7,7 @@ Book::Book(const std::string& title, const std::string& author, const std::strin
 
 // Convert Book object to JSON format
 json Book::toJson() const {
-    return json{{"title", title}, {"author", author}, {"isbn", isbn}};
+    return json{{"title", title}, {"author", author}, {"isbn", isbn}, {"copiesInStock", copiesInStock}};
 }
 
 // Create Book object from JSON data
@@ -20,6 +20,7 @@ void Book::print() const {
     std::cout << "Title: " << title << std::endl;
     std::cout << "Author: " << author << std::endl;
     std::cout << "ISBN: " << isbn << std::endl;
+    std::cout << "Copies in Stock: " << copiesInStock << std::endl;
 }
 
 std::string Book::getTitle() const {
@@ -49,7 +50,6 @@ int Book::getCopiesInStock() const {
 void Book::setCopiesInStock(int num) {
     copiesInStock = num;
 }
-
 
 bool Book::operator<(const Book& other) const {
     return this->isbn < other.isbn;
