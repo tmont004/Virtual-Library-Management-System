@@ -1,0 +1,31 @@
+if you have windows, do the following:::
+
+to run this program you need to enter this command in terminal
+
+g++ --version
+
+if the version is bellow 10 you need to update the compiler, LibrarySytem.cpp uses c++17 features and it will not compile
+this is not fun and it took me forever to do
+
+after this you run
+
+.\run.bat
+
+if you see warnings, dont worry about it, its only errors that you need to worry about
+
+after compilation you run the following command
+
+.\my_program.exe
+
+thats it.
+
+DO NOT DELETE MY MAKEFILE plz, just leave it as .txt 
+::::
+
+if you have mac or linux, just run
+
+make 
+
+then 
+
+.\my_program
