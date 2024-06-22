@@ -6,9 +6,10 @@
 #include <string>
 #include "LibrarySystem.h"
 #include "user_system.hpp" // logic for the welcome page
+#include "globals.h"
 
 string filename = "userDatabase.json";
-string filename2 = "bookDB.json";
+
 
 // Main function: Entry point of the program
 int main() {
@@ -29,3 +30,4 @@ int main() {
     
     return 0;
 }
+

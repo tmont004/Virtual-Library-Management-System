@@ -4,12 +4,12 @@
 #include <iostream>
 #include <unordered_map>
 #include <queue>
-#include "user_system.hpp" // Changed from user.h to user_system.hpp
+#include "user_system.hpp"
 #include "Book.h"
 #include "BinarySearchTree.h"
+#include "bookdatabase.h" // Include the BookDatabase header
 #include "json.hpp"
 
-// Use the std namespace
 using namespace std;
 using json = nlohmann::json;
 
@@ -21,15 +21,15 @@ public:
 
     // Methods for book management
     void addBook();
-    void removeBook();
-    void updateBook();
+    
+    
     void searchBooks();
     void viewLibrary() const;
 
     // Methods for user and admin management
     bool operator==(const string &title) const;
-    void borrowBook(const string& bookTitle);  // Corrected the parameter name
-    void returnBook(const string& bookTitle);  // Corrected the parameter name
+    void borrowBook(const string& bookTitle);
+    void returnBook(const string& bookTitle);
     string getTitle() const;
 
     // Setters for book details
@@ -39,17 +39,20 @@ public:
 
 private:
     // Data structures
-    BookBST bookTree; // Use BookBST for managing books
-    unordered_map<string, User> users;  // HashMap to store users
-    unordered_map<string, Book> books;  // HashMap to store books
-    queue<string> checkoutQueue;        // Queue to manage book borrowing
+    BookBST bookTree;
+    unordered_map<string, User> users;
+    queue<string> checkoutQueue;
+    BookDatabase bookDatabase; // Add an instance of BookDatabase
+
+    void removeBook();
+    void updateBook();
 
     // Methods for loading and saving data
     void loadFromFile();
     void saveToFile();
     
     // Methods for menu handling after login
-    void userOrAdminMenu(); // New method to decide between user and admin menu
+    void userOrAdminMenu();
     void userMenu(const string& username);
     void adminMenu();
 

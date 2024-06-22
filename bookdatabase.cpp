@@ -1,9 +1,11 @@
 //this db uses filename as a placeholder, however, filename is already a placeholder for userDatabase
 //Ill replace filename with filename2 and define it in the main function
 //ill add a .json file to correspond with this
-#include "bookdatabase.h"
+
 #include <fstream>
 #include <iostream>
+#include "globals.h"
+#include "bookdatabase.h"
 
 // Add a book to the database
 void BookDatabase::addBook(const Book &book) {
@@ -66,4 +68,16 @@ Book BookDatabase::getBookByISBN(const std::string &isbn) const {
         }
     }
     throw std::runtime_error("Book not found");
+}
+
+void BookDatabase::updateBook(const std::string &isbn, const std::string &title, const std::string &author, int copiesInStock) {
+    for (auto &book : books) {
+        if (book.toJson().at("isbn") == isbn) {
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setCopiesInStock(copiesInStock);
+            return;
+        }
+    }
+    std::cout << "book not found" << std::endl;
 }

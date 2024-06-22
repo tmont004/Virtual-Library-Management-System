@@ -2,16 +2,19 @@
 #include "BinarySearchTree.h"
 #include <fstream>
 #include <iostream>
-#include "json.hpp"
+#include "json.hpp" //include globals/h to use filename2
+#include "globals.h"
 
 using namespace std;
 using json = nlohmann::json;
 
+string filename2 = "bookDB.json";
+
 // Method to run the library system
 void LibrarySystem::run() {
-    loadFromFile();  // Load data from files
+    bookDatabase.loadFromFile(filename2);  // Load data from files
     userOrAdminMenu(); // Display menu after successful login
-    saveToFile();    // Save data to files
+    bookDatabase.saveToFile(filename2);    // Save data to files
 }
 
 // Method to display the user or admin menu after login
@@ -28,56 +31,7 @@ void LibrarySystem::userOrAdminMenu() {
     }
 }
 
-// Method to load data from files
-void LibrarySystem::loadFromFile() {
-    ifstream userFile("userDatabase.json");
-    ifstream bookFile("bookDB.json");
 
-    if (userFile.is_open() && bookFile.is_open()) {
-        json userData, bookData;
-        userFile >> userData;
-        bookFile >> bookData;
-
-        for (auto& [key, value] : userData.items()) {
-            users[key] = User(value["username"], value["password"], value["isAdmin"]);
-        }
-
-        for (auto& [key, value] : bookData.items()) {
-            books[key] = Book(value["title"], value["author"], value["isbn"], value["copiesInStock"]);
-        }
-
-        userFile.close();
-        bookFile.close();
-    } else {
-        cerr << "Error opening files for loading data.\n";
-    }
-}
-
-// Method to save data to files
-void LibrarySystem::saveToFile() {
-    ofstream userFile("userDatabase.json");
-    ofstream bookFile("bookDB.json");
-
-    if (userFile.is_open() && bookFile.is_open()) {
-        json userData, bookData;
-
-        for (const auto& [key, user] : users) {
-            userData[key] = { {"username", user.getUsername()}, {"password", user.getPassword()}, {"isAdmin", user.isAdminUser()} };
-        }
-
-        for (const auto& [key, book] : books) {
-            bookData[key] = { {"title", book.getTitle()}, {"author", book.getAuthor()}, {"isbn", book.getISBN()}, {"copiesInStock", book.getCopiesInStock()} };
-        }
-
-        userFile << userData.dump(4);
-        bookFile << bookData.dump(4);
-
-        userFile.close();
-        bookFile.close();
-    } else {
-        cerr << "Error opening files for saving data.\n";
-    }
-}
 
 void LibrarySystem::borrowBook(const string& bookTitle) {
     cout << "Borrowing book: " << bookTitle << endl;
@@ -133,7 +87,7 @@ void LibrarySystem::userMenu(const string& username) {
                 addBook();  // Handle adding a book
                 break;
             case 6:
-                viewLibrary();  // Handle viewing the library
+                bookDatabase.printAllBooks();  // Handle viewing the library
                 break;
             case 7:
                 adminMenu();  // Handle displaying the admin menu
@@ -192,11 +146,10 @@ void LibrarySystem::addBook() {
     // Create a new Book object
     Book newBook(title, author, isbn, copiesInStock);
 
-    // Check if the book with the given ISBN already exists using search
-    if (books.find(isbn) != books.end()) {
+    if (bookDatabase.isBookAvailable(isbn)) {
         cout << "Book with this ISBN already exists.\n";
     } else {
-        books[isbn] = newBook; // Add the new book to the map
+        bookDatabase.addBook(newBook); // Add the new book to the bookDatabase
         cout << "Book added successfully.\n";
     }
 }
@@ -208,22 +161,23 @@ void LibrarySystem::removeBook() {
     cin >> isbn;
 
     // Check if the book exists
-    if (books.find(isbn) != books.end()) {
-        books.erase(isbn);  // Remove the book
+    if (bookDatabase.isBookAvailable(isbn)) {
+        bookDatabase.removeBook(isbn);  // Remove the book
         cout << "Book removed successfully.\n";
     } else {
         cout << "Book not found.\n";
     }
 }
 
-// Method to update book information
+
+
 void LibrarySystem::updateBook() {
     string isbn, title, author;
     int copiesInStock;
     cout << "Enter ISBN of the book to update: ";
     cin >> isbn;
 
-    if (books.find(isbn) != books.end()) {
+    if (bookDatabase.isBookAvailable(isbn)) {
         cout << "Enter new title: ";
         cin.ignore(); // Ignore the newline character left by previous input
         getline(cin, title);
@@ -232,9 +186,8 @@ void LibrarySystem::updateBook() {
         cout << "Enter number of copies in stock: ";
         cin >> copiesInStock;
 
-        books[isbn].setTitle(title);
-        books[isbn].setAuthor(author);
-        books[isbn].setCopiesInStock(copiesInStock);
+        // Use bookDatabase to update the book details
+        bookDatabase.updateBook(isbn, title, author, copiesInStock);
         cout << "Book updated successfully.\n";
     } else {
         cout << "Book not found.\n";
@@ -250,15 +203,15 @@ int LibrarySystem::getNoOfCopiesInStock() const {
     return copiesInStock;  // This variable is from "Book.h"; am wondering if a scope :: is needed to pull from the Book class?
 }
 
-bool LibrarySystem::checkTitle(const string& title) {
-    // This function should probably check titles of books within the LibrarySystem's collection
-    for (const auto& pair : books) {
-        if (pair.second.getTitle() == title) {
-            return true;
-        }
-    }
-    return false;
-}
+// bool LibrarySystem::checkTitle(const string& title) {
+//     // This function should probably check titles of books within the LibrarySystem's collection
+//     for (const auto& pair : books) {
+//         if (pair.second.getTitle() == title) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 void LibrarySystem::updateInStock(int num) {
     copiesInStock += num;

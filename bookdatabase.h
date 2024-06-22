@@ -6,6 +6,7 @@
 #include <string>
 #include "Book.h" // book.h will throw an error, changed it to Book.h 
 #include "json.hpp" // Include JSON library
+#include "globals.h"
 
 using json = nlohmann::json; // Alias for JSON namespace
 
@@ -32,8 +33,11 @@ public:
     // Get a book from the database by ISBN
     Book getBookByISBN(const std::string &isbn) const;
 
+    void updateBook(const std::string &isbn, const std::string &title, const std::string &author, int copiesInStock);
+
 private:
     std::list<Book> books; // List to store Book objects
+    
 };
 
 #endif
