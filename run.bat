@@ -6,10 +6,10 @@ set CXX=g++
 set CXXFLAGS=-std=c++17 -Wall -I.
 
 REM List of source files
-set SOURCES=BinarySearchTree.cpp Book.cpp bookdatabase.cpp LibrarySystem.cpp main.cpp user_system.cpp
+set SOURCES=Book.cpp bookdatabase.cpp LibrarySystem.cpp main.cpp user_system.cpp
 
 REM List of object files
-set OBJECTS=BinarySearchTree.obj Book.obj bookdatabase.obj LibrarySystem.obj main.obj user_system.obj
+set OBJECTS=Book.obj bookdatabase.obj LibrarySystem.obj main.obj user_system.obj
 
 REM Name of the final executable
 set TARGET=my_program.exe

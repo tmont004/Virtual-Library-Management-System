@@ -6,7 +6,6 @@
 #include <queue>
 #include "user_system.hpp"
 #include "Book.h"
-#include "BinarySearchTree.h"
 #include "bookdatabase.h" // Include the BookDatabase header
 #include "json.hpp"
 
@@ -39,7 +38,6 @@ public:
 
 private:
     // Data structures
-    BookBST bookTree;
     unordered_map<string, User> users;
     queue<string> checkoutQueue;
     BookDatabase bookDatabase; // Add an instance of BookDatabase

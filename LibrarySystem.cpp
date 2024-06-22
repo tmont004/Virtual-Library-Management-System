@@ -1,5 +1,4 @@
 #include "LibrarySystem.h"
-#include "BinarySearchTree.h"
 #include <fstream>
 #include <iostream>
 #include "json.hpp" //include globals/h to use filename2
