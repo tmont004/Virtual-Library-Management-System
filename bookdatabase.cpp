@@ -1,16 +1,18 @@
 #include <fstream>
 #include <iostream>
 #include "globals.h"
-#include "BookDatabase.h"
+#include "bookdatabase.h"
+
+using namespace std;
 
 // Add a book to the database
 void BookDatabase::addBook(const Book &book) {
     root = addBook(std::move(root), book);
 }
 
-std::unique_ptr<BookDatabase::TreeNode> BookDatabase::addBook(std::unique_ptr<TreeNode> node, const Book &book) {
+unique_ptr<BookDatabase::TreeNode> BookDatabase::addBook(unique_ptr<TreeNode> node, const Book &book) {
     if (!node) {
-        return std::make_unique<TreeNode>(book);
+        return make_unique<TreeNode>(book);
     }
     if (book.getISBN() < node->book.getISBN()) {
         node->left = addBook(std::move(node->left), book);
@@ -21,11 +23,11 @@ std::unique_ptr<BookDatabase::TreeNode> BookDatabase::addBook(std::unique_ptr<Tr
 }
 
 // Remove a book from the database by ISBN
-void BookDatabase::removeBook(const std::string &isbn) {
+void BookDatabase::removeBook(const string &isbn) {
     root = removeBook(std::move(root), isbn);
 }
 
-std::unique_ptr<BookDatabase::TreeNode> BookDatabase::removeBook(std::unique_ptr<TreeNode> node, const std::string &isbn) {
+unique_ptr<BookDatabase::TreeNode> BookDatabase::removeBook(unique_ptr<TreeNode> node, const string &isbn) {
     if (!node) {
         return nullptr;
     }
@@ -54,8 +56,8 @@ BookDatabase::TreeNode* BookDatabase::findMin(TreeNode* node) const {
 }
 
 // Load book data from a JSON file
-void BookDatabase::loadFromFile(const std::string &filename2) {
-    std::ifstream file(filename2);
+void BookDatabase::loadFromFile(const string &filename2) {
+    ifstream file(filename2);
     if (file.is_open()) {
         json j;
         file >> j;
@@ -64,14 +66,14 @@ void BookDatabase::loadFromFile(const std::string &filename2) {
             addBook(Book::fromJson(item));
         }
     } else {
-        throw std::runtime_error("Could not open file for reading: " + filename2);
+        throw runtime_error("Could not open file for reading: " + filename2);
     }
 }
 
 // Save book data to a JSON file
-void BookDatabase::saveToFile(const std::string &filename2) const {
+void BookDatabase::saveToFile(const string &filename2) const {
     json j;
-    std::function<void(TreeNode*)> saveToJson = [&](TreeNode* node) {
+    function<void(TreeNode*)> saveToJson = [&](TreeNode* node) {
         if (node) {
             j.push_back(node->book.toJson());
             saveToJson(node->left.get());
@@ -79,11 +81,11 @@ void BookDatabase::saveToFile(const std::string &filename2) const {
         }
     };
     saveToJson(root.get());
-    std::ofstream file(filename2);
+    ofstream file(filename2);
     if (file.is_open()) {
         file << j.dump(4);
     } else {
-        throw std::runtime_error("Could not open file for writing: " + filename2);
+        throw runtime_error("Could not open file for writing: " + filename2);
     }
 }
 
@@ -96,26 +98,26 @@ void BookDatabase::inOrderTraversal(TreeNode* node) const {
     if (node) {
         inOrderTraversal(node->left.get());
         node->book.print();
-        std::cout << "-------------------------" << std::endl;
+        cout << "-------------------------" << endl;
         inOrderTraversal(node->right.get());
     }
 }
 
 // Check if a book is available in the database by ISBN
-bool BookDatabase::isBookAvailable(const std::string &isbn) const {
+bool BookDatabase::isBookAvailable(const string &isbn) const {
     return findBook(root.get(), isbn) != nullptr;
 }
 
 // Get a book from the database by ISBN
-Book BookDatabase::getBookByISBN(const std::string &isbn) const {
+Book BookDatabase::getBookByISBN(const string &isbn) const {
     TreeNode* node = findBook(root.get(), isbn);
     if (node) {
         return node->book;
     }
-    throw std::runtime_error("Book not found");
+    throw runtime_error("Book not found");
 }
 
-BookDatabase::TreeNode* BookDatabase::findBook(TreeNode* node, const std::string &isbn) const {
+BookDatabase::TreeNode* BookDatabase::findBook(TreeNode* node, const string &isbn) const {
     if (!node) {
         return nullptr;
     }
@@ -129,13 +131,13 @@ BookDatabase::TreeNode* BookDatabase::findBook(TreeNode* node, const std::string
 }
 
 // Update a book's details
-void BookDatabase::updateBook(const std::string &isbn, const std::string &title, const std::string &author, int copiesInStock) {
+void BookDatabase::updateBook(const string &isbn, const string &title, const string &author, int copiesInStock) {
     TreeNode* node = findBook(root.get(), isbn);
     if (node) {
         node->book.setTitle(title);
         node->book.setAuthor(author);
         node->book.setCopiesInStock(copiesInStock);
     } else {
-        std::cout << "Book not found" << std::endl;
+        cout << "Book not found" << endl;
     }
 }

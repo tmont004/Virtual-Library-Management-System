@@ -7,6 +7,7 @@
 #include "json.hpp"
 #include "globals.h"
 
+using namespace std;
 using json = nlohmann::json;
 
 class BookDatabase {
@@ -62,4 +63,4 @@ private:
     void inOrderTraversal(TreeNode* node) const;
 };
 
-#endif
+#endif // BOOKDATABASE_H
