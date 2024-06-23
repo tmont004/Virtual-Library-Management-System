@@ -130,6 +130,28 @@ BookDatabase::TreeNode* BookDatabase::findBook(TreeNode* node, const string &isb
     }
 }
 
+// Find a book by its title
+Book BookDatabase::findBookByTitle(const std::string &title) const {
+    TreeNode* node = findBookByTitle(root.get(), title);
+    if (node) {
+        return node->book;
+    }
+    throw runtime_error("Book not found");
+}
+
+BookDatabase::TreeNode* BookDatabase::findBookByTitle(TreeNode* node, const string &title) const {
+    if (!node) {
+        return nullptr;
+    }
+    if (title < node->book.getTitle()) {
+        return findBookByTitle(node->left.get(), title);
+    } else if (title > node->book.getTitle()) {
+        return findBookByTitle(node->right.get(), title);
+    } else {
+        return node;
+    }
+}
+
 // Update a book's details
 void BookDatabase::updateBook(const string &isbn, const string &title, const string &author, int copiesInStock) {
     TreeNode* node = findBook(root.get(), isbn);

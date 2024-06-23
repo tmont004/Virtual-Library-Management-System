@@ -8,6 +8,7 @@ using namespace std;
 using json = nlohmann::json;
 
 string filename2 = "bookDB.json";
+string borrowedBooksFilename = "borrowedBooks.json";
 
 // Constructor to initialize the userInfo
 LibrarySystem::LibrarySystem(const UserInfo& userInfo) : userInfo(userInfo) {}
@@ -27,18 +28,12 @@ void LibrarySystem::userOrAdminMenu() {
     
     bool isAdmin = userInfo.isAdmin();
 
-    
-
     // Check if the user is an admin or a regular user
     if (isAdmin) {
         adminMenu();
     } else {
         userMenu(userName);
     }
-}
-
-void LibrarySystem::borrowBook(const string& bookTitle) {
-    cout << "Borrowing book: " << bookTitle << endl;
 }
 
 void LibrarySystem::returnBook(const string& bookTitle) {
@@ -75,7 +70,7 @@ void LibrarySystem::userMenu(const string& userName) {
                 cout << "Enter the title of the book to borrow: ";
                 cin.ignore();
                 getline(cin, bookTitle);
-                borrowBook(bookTitle);
+                borrowBook(bookTitle); // this is the function that we have to work with
                 break;
             }
             case 3: {
@@ -147,7 +142,7 @@ void LibrarySystem::addBook() {
     cout << "Enter number of copies: ";
     cin >> copiesInStock;
 
-    Book newBook(title, author, isbn, copiesInStock);
+    Book newBook(title, author, isbn, copiesInStock); //this is a book object, we have to reference this object
 
     if (bookDatabase.isBookAvailable(isbn)) {
         cout << "Book with this ISBN already exists.\n";
@@ -155,6 +150,49 @@ void LibrarySystem::addBook() {
         bookDatabase.addBook(newBook);
         cout << "Book added successfully.\n";
     }
+}
+
+void LibrarySystem::borrowBook(const string& bookTitle) {
+    cout << "Borrowing book: " << bookTitle << endl;
+
+    // Find the book in the book database
+    Book book = bookDatabase.findBookByTitle(bookTitle);
+    if (book.getTitle().empty()) {
+        cout << "Book not found.\n";
+        return;
+    }
+
+    // Check if there are copies available
+    if (book.getCopiesInStock() <= 0) {
+        cout << "No copies available for borrowing.\n";
+        return;
+    }
+
+    // Decrease the number of copies in stock
+    bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() - 1);
+
+    // Load the borrowed books JSON file
+    json borrowedBooks;
+    ifstream inFile(borrowedBooksFilename);
+    if (inFile.is_open()) {
+        inFile >> borrowedBooks;
+        inFile.close();
+    }
+
+    // Get the username
+    string username = userInfo.getUsername();
+
+    // Add the book to the user's borrowed books list
+    borrowedBooks[username].push_back(book.getISBN());
+
+    // Save the updated borrowed books JSON file
+    ofstream outFile(borrowedBooksFilename);
+    if (outFile.is_open()) {
+        outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
+        outFile.close();
+    }
+
+    cout << "Book borrowed successfully.\n";
 }
 
 void LibrarySystem::removeBook() {

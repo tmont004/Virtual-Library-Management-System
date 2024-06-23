@@ -35,7 +35,7 @@ public:
     // Setters for book details
     void setTitle(const string &title);
     void setAuthor(const string &author);
-    void setCopiesInStock(int copies);
+    // void setCopiesInStock(int copies);
 
 private:
     // Data structures
@@ -48,7 +48,7 @@ private:
     void updateBook();
 
     // Methods for loading and saving data
-    void loadFromFile();
+    void loadFromFile(const string &filename2);
     void saveToFile();
     
     // Methods for menu handling after login
@@ -65,7 +65,7 @@ private:
     int getNoOfCopiesInStock() const;
     bool checkTitle(const string& title);
     void updateInStock(int num);
+    void setCopiesInStock(int num);
 };
 
 #endif // LIBRARYSYSTEM_H
-

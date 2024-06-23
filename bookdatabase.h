@@ -36,6 +36,9 @@ public:
     // Update a book's details
     void updateBook(const std::string &isbn, const std::string &title, const std::string &author, int copiesInStock);
 
+    // Find a book by its title
+    Book findBookByTitle(const std::string &title) const;
+
 private:
     struct TreeNode {
         Book book;
@@ -61,6 +64,7 @@ private:
     TreeNode* findMin(TreeNode* node) const;
     TreeNode* findBook(TreeNode* node, const std::string &isbn) const;
     void inOrderTraversal(TreeNode* node) const;
+    TreeNode* findBookByTitle(TreeNode* node, const std::string &title) const;
 };
 
 #endif // BOOKDATABASE_H
