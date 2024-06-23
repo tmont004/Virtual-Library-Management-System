@@ -19,12 +19,9 @@ public:
     User() : isAdmin(false) {}  // Default constructor
 
     User(const string& uname, const string& pass, bool admin)
-        : username(uname), password(pass), isAdmin(false) {}
-
-        
+        : username(uname), password(pass), isAdmin(admin) {}
 
     string getUsername() const { return username; }
-    
     string getPassword() const { return password; }
     bool checkPassword(string pass) const { return password == pass; }
     bool isAdminUser() const { return isAdmin; }
@@ -50,10 +47,11 @@ public:
     void demoteFromAdmin(string username);
     bool isAdmin(string username) const;
     void changeUserPassword(string username, string newPassword);
+    User getUser(string username) const; // New method to get a User object
 };
 
 // Class representing the welcome page
-class WelcomePage { // From welcomepage.hpp
+class WelcomePage {
 private:
     string username;
     string password;
@@ -61,28 +59,44 @@ private:
 
 public:
     // Constructor
-    WelcomePage(UserRegistry& registry, const string& usr = "", const string& pswrd = ""); // From welcomepage.hpp
+    WelcomePage(UserRegistry& registry, const string& usr = "", const string& pswrd = "");
 
     // Method to capture user input
-    void inputCredentials(); // From welcomepage.hpp
+    void inputCredentials();
 
     // Method for authentication
-    bool authenticate(); // From welcomepage.hpp
+    bool authenticate();
 
     // Method to create an account
-    bool createAccount(const string& tempUsername, const string& tempPassword); // From welcomepage.hpp
+    bool createAccount(const string& tempUsername, const string& tempPassword);
 
     // Method to logout
-    void logout(); // From welcomepage.hpp
+    void logout();
 
     // Method to exit the program
-    void exit(); // From welcomepage.hpp
+    void exit();
+
+    string getUsername() const { return username; } // Getter for username
+};
+
+// Class representing user information
+class UserInfo {
+private:
+    string username;
+    UserRegistry& userRegistry;
+
+public:
+    UserInfo(const string& uname, UserRegistry& registry);
+
+    string getUsername() const;
+    string getPassword() const;
+    bool isAdmin() const;
 };
 
 // Function to capture user action
-string captureUserAction(); // From welcomepage.hpp
+string captureUserAction();
 
 // Function to handle the user interface logic
-bool runUserInterface(UserRegistry& userRegistry); // From welcomepage.hpp
+bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername);
 
 #endif // USER_SYSTEM_HPP

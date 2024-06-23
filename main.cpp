@@ -5,29 +5,28 @@
 #include <iostream>
 #include <string>
 #include "LibrarySystem.h"
-#include "user_system.hpp" // logic for the welcome page
+#include "user_system.hpp" // Logic for the welcome page
 #include "globals.h"
 
 string filename = "userDatabase.json";
 
-
 // Main function: Entry point of the program
 int main() {
-    
     // Create the UserRegistry instance with the specified file
     UserRegistry userRegistry(filename);
-    // Create a LibrarySystem object
-    LibrarySystem library;
     
-     
-        //this runs the user interface and this function returns a bool value
-     if (runUserInterface(userRegistry) == true) {
-          
+    string loggedInUsername;
+    // Run the user interface and capture the username of the logged-in user
+    if (runUserInterface(userRegistry, loggedInUsername)) {
+        // Create a UserInfo object with the logged-in username
+        UserInfo userInfo(loggedInUsername, userRegistry);
+        
+        // Create a LibrarySystem object with the UserInfo
+        LibrarySystem librarySystem(userInfo);
+        
         // Run the library system
-        library.run();
+        librarySystem.run();
     }
-    
     
     return 0;
 }
-

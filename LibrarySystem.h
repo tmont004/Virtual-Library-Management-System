@@ -15,13 +15,14 @@ using json = nlohmann::json;
 // LibrarySystem class definition
 class LibrarySystem {
 public:
+    // Constructor to initialize the userInfo
+    LibrarySystem(const UserInfo& userInfo);
+
     // Method to run the library system
     void run();
 
     // Methods for book management
     void addBook();
-    
-    
     void searchBooks();
     void viewLibrary() const;
 
@@ -41,6 +42,7 @@ private:
     unordered_map<string, User> users;
     queue<string> checkoutQueue;
     BookDatabase bookDatabase; // Add an instance of BookDatabase
+    UserInfo userInfo; // Add an instance of UserInfo
 
     void removeBook();
     void updateBook();
