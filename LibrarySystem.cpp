@@ -235,24 +235,39 @@ void LibrarySystem::removeBook() {
 void LibrarySystem::updateBook() {
     string isbn, title, author;
     int copiesInStock;
+
+    // Input ISBN and validate it
     cout << "Enter ISBN of the book to update: ";
     cin >> isbn;
 
-    if (bookDatabase.isBookAvailable(isbn)) {
+    try {
+        // Check if the book exists
+        if (!bookDatabase.isBookAvailable(isbn)) {
+            cout << "Error: Book with ISBN " << isbn << " not found." << endl;
+            return;
+        }
+
+        // Input new title
+        cin.ignore(); // Clear the input buffer
         cout << "Enter new title: ";
-        cin.ignore();
         getline(cin, title);
+
+        // Input new author
         cout << "Enter new author: ";
         getline(cin, author);
+
+        // Input number of copies in stock
         cout << "Enter number of copies in stock: ";
         cin >> copiesInStock;
 
+        // Update the book in the database
         bookDatabase.updateBook(isbn, title, author, copiesInStock);
-        cout << "Book updated successfully.\n";
-    } else {
-        cout << "Book not found.\n";
+        cout << "Book with ISBN " << isbn << " updated successfully." << endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
     }
 }
+
 
 bool LibrarySystem::operator==(const string &title) const {
     return this->getTitle() == title;
