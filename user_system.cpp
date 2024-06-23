@@ -6,13 +6,12 @@ using namespace std;
 
 // Global variable for the filename
 
-
 // UserRegistry class methods
 UserRegistry::UserRegistry(string filename) : filename(filename) {
     loadUsersFromJSON();
 }
 
- void UserRegistry::loadUsersFromJSON() {
+void UserRegistry::loadUsersFromJSON() {
     ifstream inFile(filename);
     if (inFile.is_open()) {
         json j;
@@ -31,18 +30,12 @@ UserRegistry::UserRegistry(string filename) : filename(filename) {
 }
 
 void UserRegistry::saveUsersToJSON() const {
-    ofstream outFile(filename); //this line attempts to open the json file
-    if (outFile.is_open()) { // this needs a try catch to not break the program 
+    ofstream outFile(filename);
+    if (outFile.is_open()) {
         json j;
         for (const auto& pair : users) {
             j[pair.first] = {
-                //so it looks like we're having a problem with a value here being passed as null so well comment them out for now
                 {"username", pair.second.getUsername()},
-                // {"firstName", pair.second.getFirstName()},
-                // {"lastName", pair.second.getLastName()},
-                // {"phoneNumber", pair.second.getPhoneNumber()},
-                // {"address", pair.second.getAddress()},
-                // {"birthday", pair.second.getBirthday()},
                 {"password", pair.second.getPassword()},
                 {"isAdmin", pair.second.isAdminUser()}
             };
@@ -94,6 +87,14 @@ void UserRegistry::changeUserPassword(string username, string newPassword) {
     }
 }
 
+User UserRegistry::getUser(string username) const {
+    auto it = users.find(username);
+    if (it != users.end()) {
+        return it->second;
+    }
+    throw runtime_error("User not found: " + username);
+}
+
 // WelcomePage class methods
 WelcomePage::WelcomePage(UserRegistry& registry, const std::string& usr, const std::string& pswrd)
     : userRegistry(registry), username(usr), password(pswrd) {}
@@ -128,6 +129,34 @@ void WelcomePage::exit() {
     std::exit(0);
 }
 
+// UserInfo class methods
+UserInfo::UserInfo(const string& uname, UserRegistry& registry)
+    : username(uname), userRegistry(registry) {}
+
+string UserInfo::getUsername() const {
+    return username;
+}
+
+string UserInfo::getPassword() const {
+    try {
+        User user = userRegistry.getUser(username);
+        return user.getPassword();
+    } catch (const runtime_error& e) {
+        cerr << e.what() << endl;
+        return "";
+    }
+}
+
+bool UserInfo::isAdmin() const {
+    try {
+        User user = userRegistry.getUser(username);
+        return user.isAdminUser();
+    } catch (const runtime_error& e) {
+        cerr << e.what() << endl;
+        return false;
+    }
+}
+
 // Function to capture user action
 string captureUserAction() {
     string action;
@@ -137,8 +166,7 @@ string captureUserAction() {
 }
 
 // Function to handle the user interface logic
-// Function to handle the user interface logic
-bool runUserInterface(UserRegistry& userRegistry) {
+bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername) {
     WelcomePage welcomePage(userRegistry);
 
     bool isLoggedIn = false;
@@ -147,11 +175,14 @@ bool runUserInterface(UserRegistry& userRegistry) {
     while (running) {
         string action = captureUserAction();
         if (action == "login") {
-            welcomePage.inputCredentials(); //just caputres the username and password
+            welcomePage.inputCredentials();
             if (welcomePage.authenticate()) {
                 isLoggedIn = true;
+                loggedInUsername = welcomePage.getUsername();
                 cout << "Login successful." << endl;
-                
+                UserInfo userInfo(welcomePage.getUsername(), userRegistry);
+                cout << "Welcome, " << userInfo.getUsername() << endl;
+                cout << "Admin status: " << (userInfo.isAdmin() ? "Yes" : "No") << endl;
                 running = false;
             } else {
                 cout << "Login failed." << endl;
@@ -178,6 +209,5 @@ bool runUserInterface(UserRegistry& userRegistry) {
         }
     }
 
-   
     return isLoggedIn;
 }

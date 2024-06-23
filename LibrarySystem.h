@@ -4,59 +4,67 @@
 #include <iostream>
 #include <unordered_map>
 #include <queue>
-#include "user_system.hpp" // Changed from user.h to user_system.hpp
+#include "user_system.hpp"
 #include "Book.h"
-#include "BinarySearchTree.h"
+#include "bookdatabase.h" // Include the BookDatabase header
+#include "json.hpp"
+
+using namespace std;
+using json = nlohmann::json;
 
 // LibrarySystem class definition
 class LibrarySystem {
 public:
+    // Constructor to initialize the userInfo
+    LibrarySystem(const UserInfo& userInfo);
+
     // Method to run the library system
     void run();
 
     // Methods for book management
     void addBook();
-    void removeBook();
-    void updateBook();
     void searchBooks();
+    void viewLibrary() const;
 
     // Methods for user and admin management
-    bool operator==(const std::string &title) const;
-    void borrowBook(const std::string& bookTitle);  // Corrected the parameter name
-    void returnBook(const std::string& bookTitle);  // Corrected the parameter name
-    std::string getTitle() const;
+    bool operator==(const string &title) const;
+    void borrowBook(const string& bookTitle);
+    void returnBook(const string& bookTitle);
+    string getTitle() const;
 
     // Setters for book details
-    void setTitle(const std::string &title);
-    void setAuthor(const std::string &author);
+    void setTitle(const string &title);
+    void setAuthor(const string &author);
     void setCopiesInStock(int copies);
 
 private:
     // Data structures
-    BookBST bookTree; // Use BookBST for managing books
-    std::unordered_map<std::string, User> users;  // HashMap to store users
-    std::unordered_map<std::string, Book> books;  // HashMap to store books
-    std::queue<std::string> checkoutQueue;        // Queue to manage book borrowing
+    unordered_map<string, User> users;
+    queue<string> checkoutQueue;
+    BookDatabase bookDatabase; // Add an instance of BookDatabase
+    UserInfo userInfo; // Add an instance of UserInfo
+
+    void removeBook();
+    void updateBook();
 
     // Methods for loading and saving data
     void loadFromFile();
     void saveToFile();
     
     // Methods for menu handling after login
-    void userOrAdminMenu(); // New method to decide between user and admin menu
-    void userMenu(const std::string& username);
+    void userOrAdminMenu();
+    void userMenu(const string& username);
     void adminMenu();
 
     // Additional member variables
-    std::string title;
-    std::string author;
+    string title;
+    string author;
     int copiesInStock;
 
     // Additional optional functions
     int getNoOfCopiesInStock() const;
-    bool checkTitle(const std::string& title);
+    bool checkTitle(const string& title);
     void updateInStock(int num);
 };
 
 #endif // LIBRARYSYSTEM_H
-
