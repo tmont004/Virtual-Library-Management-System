@@ -156,57 +156,81 @@ void LibrarySystem::borrowBook(const string& bookTitle) {
     cout << "Borrowing book: " << bookTitle << endl;
 
     // Find the book in the book database
-    Book book = bookDatabase.findBookByTitle(bookTitle);
+    Book book;
+    try {
+        book = bookDatabase.findBookByTitle(bookTitle);
+    } catch (const runtime_error& e) {
+        cerr << "Error: " << e.what() << endl;
+        return;
+    }
+
+    // Check if the book was found
     if (book.getTitle().empty()) {
-        cout << "Book not found.\n";
+        cout << "Error: Book with title '" << bookTitle << "' not found." << endl;
         return;
     }
 
     // Check if there are copies available
     if (book.getCopiesInStock() <= 0) {
-        cout << "No copies available for borrowing.\n";
+        cout << "Error: No copies available for book '" << bookTitle << "'." << endl;
         return;
     }
 
-    // Decrease the number of copies in stock
-    bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() - 1);
+    // Proceed to borrow the book
+    try {
+        // Decrease the number of copies in stock
+        bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() - 1);
 
-    // Load the borrowed books JSON file
-    json borrowedBooks;
-    ifstream inFile(borrowedBooksFilename);
-    if (inFile.is_open()) {
-        inFile >> borrowedBooks;
-        inFile.close();
+        // Load the borrowed books JSON file
+        json borrowedBooks;
+        ifstream inFile(borrowedBooksFilename);
+        if (inFile.is_open()) {
+            inFile >> borrowedBooks;
+            inFile.close();
+        } else {
+            throw runtime_error("Failed to open file for reading: " + borrowedBooksFilename);
+        }
+
+        // Get the username
+        string username = userInfo.getUsername();
+
+        // Add the book to the user's borrowed books list
+        borrowedBooks[username].push_back(book.getISBN());
+
+        // Save the updated borrowed books JSON file
+        ofstream outFile(borrowedBooksFilename);
+        if (outFile.is_open()) {
+            outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
+            outFile.close();
+        } else {
+            throw runtime_error("Failed to open file for writing: " + borrowedBooksFilename);
+        }
+
+        cout << "Book '" << bookTitle << "' borrowed successfully." << endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
     }
-
-    // Get the username
-    string username = userInfo.getUsername();
-
-    // Add the book to the user's borrowed books list
-    borrowedBooks[username].push_back(book.getISBN());
-
-    // Save the updated borrowed books JSON file
-    ofstream outFile(borrowedBooksFilename);
-    if (outFile.is_open()) {
-        outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
-        outFile.close();
-    }
-
-    cout << "Book borrowed successfully.\n";
 }
+
 
 void LibrarySystem::removeBook() {
     string isbn;
     cout << "Enter ISBN of the book to remove: ";
     cin >> isbn;
 
-    if (bookDatabase.isBookAvailable(isbn)) {
-        bookDatabase.removeBook(isbn);
-        cout << "Book removed successfully.\n";
-    } else {
-        cout << "Book not found.\n";
+    try {
+        // Check if the book exists
+        if (bookDatabase.isBookAvailable(isbn)) {
+            bookDatabase.removeBook(isbn);
+            cout << "Book with ISBN " << isbn << " removed successfully.\n";
+        } else {
+            cout << "Error: Book with ISBN " << isbn << " not found.\n";
+        }
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
     }
 }
+
 
 void LibrarySystem::updateBook() {
     string isbn, title, author;

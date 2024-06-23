@@ -5,6 +5,41 @@
 
 using namespace std;
 
+// Load book data from a JSON file
+void BookDatabase::loadFromFile(const string &filename2) {
+    ifstream file(filename2);
+    if (file.is_open()) {
+        json j;
+        file >> j;
+        root.reset();
+        for (const auto &item : j) {
+            addBook(Book::fromJson(item));
+        }
+    } else {
+        throw runtime_error("Could not open file for reading: " + filename2);
+    }
+}
+
+// Save book data to a JSON file
+void BookDatabase::saveToFile(const string &filename2) const {
+    json j;
+    function<void(TreeNode*)> saveToJson = [&](TreeNode* node) {
+        if (node) {
+            j.push_back(node->book.toJson());
+            saveToJson(node->left.get());
+            saveToJson(node->right.get());
+        }
+    };
+    saveToJson(root.get());
+    ofstream file(filename2);
+    if (file.is_open()) {
+        file << j.dump(4);
+    } else {
+        throw runtime_error("Could not open file for writing: " + filename2);
+    }
+}
+
+
 // Add a book to the database
 void BookDatabase::addBook(const Book &book) {
     root = addBook(std::move(root), book);
@@ -53,40 +88,6 @@ BookDatabase::TreeNode* BookDatabase::findMin(TreeNode* node) const {
         node = node->left.get();
     }
     return node;
-}
-
-// Load book data from a JSON file
-void BookDatabase::loadFromFile(const string &filename2) {
-    ifstream file(filename2);
-    if (file.is_open()) {
-        json j;
-        file >> j;
-        root.reset();
-        for (const auto &item : j) {
-            addBook(Book::fromJson(item));
-        }
-    } else {
-        throw runtime_error("Could not open file for reading: " + filename2);
-    }
-}
-
-// Save book data to a JSON file
-void BookDatabase::saveToFile(const string &filename2) const {
-    json j;
-    function<void(TreeNode*)> saveToJson = [&](TreeNode* node) {
-        if (node) {
-            j.push_back(node->book.toJson());
-            saveToJson(node->left.get());
-            saveToJson(node->right.get());
-        }
-    };
-    saveToJson(root.get());
-    ofstream file(filename2);
-    if (file.is_open()) {
-        file << j.dump(4);
-    } else {
-        throw runtime_error("Could not open file for writing: " + filename2);
-    }
 }
 
 // Print details of all books in the database
