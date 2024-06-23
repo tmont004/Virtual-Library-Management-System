@@ -1,6 +1,6 @@
 # compiler
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -I.
+CXXFLAGS = -std=c++17 -Wall -I.
 
 # .cpp are the source files and the .o are compiled object files pre-linked
 SOURCES = Book.cpp bookdatabase.cpp LibrarySystem.cpp main.cpp user_system.cpp
