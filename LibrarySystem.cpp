@@ -10,17 +10,17 @@
 using namespace std;
 using json = nlohmann::json;
 
-string filename2 = "bookDB.json";
-string borrowedBooksFilename = "borrowedBooks.json";
+string bookDB = "bookDB.json";
+string borrowedBooksFilename = "borrowedBooksDB.json";
 
 // Constructor to initialize the userInfo
 LibrarySystem::LibrarySystem(const UserInfo& userInfo) : userInfo(userInfo) {}
 
 // Method to run the library system
 void LibrarySystem::run() {
-    bookDatabase.loadFromFile(filename2);  // Load data from files
+    bookDatabase.loadFromFile(bookDB);  // Load data from files
     userOrAdminMenu(); // Display menu after successful login
-    bookDatabase.saveToFile(filename2);    // Save data to files
+    bookDatabase.saveToFile(bookDB);    // Save data to files
 }
 
 // Method to display the user or admin menu after login
@@ -46,7 +46,7 @@ void LibrarySystem::userMenu(const string& userName) {
         pressEnterToContinue();
 
         clearScreen();
-        cout << "Welcome, " << userName << " (User)" << endl;
+        cout << "Welcome, " << " User: " << userName << endl;
         cout << "===============================" << endl;
         cout << "User Menu" << endl;
         cout << "1. Search for Books" << endl;
@@ -119,7 +119,7 @@ void LibrarySystem::adminMenu() {
         pressEnterToContinue();
 
         clearScreen();
-        cout << "Admin Dashboard" << endl;
+        cout << "Welcome, " << endl; //<< " Admin: " << userName << endl;
         cout << "===============================" << endl;
         cout << "1. Add a Book" << endl;
         cout << "2. Remove a Book" << endl;
