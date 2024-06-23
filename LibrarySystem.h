@@ -28,8 +28,8 @@ public:
 
     // Methods for user and admin management
     bool operator==(const string &title) const;
-    void borrowBook(const string& bookTitle);
-    void returnBook(const string& bookTitle);
+    void borrowBook();
+    void returnBook();
     string getTitle() const;
 
     // Setters for book details
@@ -55,6 +55,8 @@ private:
     void userOrAdminMenu();
     void userMenu(const string& username);
     void adminMenu();
+    void clearScreen();
+    void pressEnterToContinue();
 
     // Additional member variables
     string title;

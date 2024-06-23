@@ -1,8 +1,11 @@
 #include "LibrarySystem.h"
 #include <fstream>
 #include <iostream>
+#include <iomanip> 
+#include <limits>
 #include "json.hpp"
 #include "globals.h"
+
 
 using namespace std;
 using json = nlohmann::json;
@@ -36,7 +39,62 @@ void LibrarySystem::userOrAdminMenu() {
     }
 }
 
-void LibrarySystem::returnBook(const string& bookTitle) {
+void LibrarySystem::userMenu(const string& userName) {
+    int choice;
+    do {
+        // Pause for user to read output before continuing
+        pressEnterToContinue();
+
+        clearScreen();
+        cout << "Welcome, " << userName << " (User)" << endl;
+        cout << "===============================" << endl;
+        cout << "User Menu" << endl;
+        cout << "1. Search for Books" << endl;
+        cout << "2. Borrow a Book" << endl;
+        cout << "3. Return a Book" << endl;
+        cout << "4. View Borrowed Books" << endl;
+        cout << "5. Add a Book" << endl;
+        cout << "6. View Library" << endl;
+        cout << "7. Logout" << endl;
+        cout << "===============================" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                searchBooks();
+                break;
+            case 2:
+                borrowBook();
+                break;
+            case 3:
+                returnBook();
+                break;
+            case 4:
+                // viewBorrowedBooks();
+                break;
+            case 5:
+                addBook();
+                break;
+            case 6:
+                viewLibrary();
+                break;
+            case 7:
+                cout << "Logged out." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+        }
+
+    } while (choice != 7);
+}
+
+void LibrarySystem::returnBook() {
+    string bookTitle;
+    cout << "Enter the title of the book to return: ";
+    cin.ignore();
+    getline(cin, bookTitle);
     cout << "Returning book: " << bookTitle << endl;
 }
 
@@ -53,61 +111,24 @@ void LibrarySystem::viewLibrary() const {
     cout << "pretend that this is the library" << endl;
 }
 
-void LibrarySystem::userMenu(const string& userName) {
-    int choice;
-    do {
-        
-        cout << "You are logged in as " << userName << " this is for testing" << endl;
-        cout << "User Menu\n";
-        cout << "1. Search for Books\n2. Borrow a Book\n3. Return a Book\n4. View Borrowed Books\n5. Add a Book\n6. View Library\n7. Admin Menu\n8. Logout\n";
-        cin >> choice;
-        switch (choice) {
-            case 1:
-                searchBooks();
-                break;
-            case 2: {
-                string bookTitle;
-                cout << "Enter the title of the book to borrow: ";
-                cin.ignore();
-                getline(cin, bookTitle);
-                borrowBook(bookTitle); // this is the function that we have to work with
-                break;
-            }
-            case 3: {
-                string bookTitle;
-                cout << "Enter the title of the book to return: ";
-                cin.ignore();
-                getline(cin, bookTitle);
-                returnBook(bookTitle);
-                break;
-            }
-            case 4:
-                // users[username].viewBorrowedBooks();
-                break;
-            case 5:
-                addBook();
-                break;
-            case 6:
-                bookDatabase.printAllBooks();
-                break;
-            case 7:
-                adminMenu();
-                break;
-            case 8:
-                cout << "Logged out.\n";
-                break;
-            default:
-                cout << "Invalid choice. Try again.\n";
-        }
-    } while (choice != 8);
-}
-
 void LibrarySystem::adminMenu() {
     int choice;
     do {
-        cout << "Admin Dashboard\n";
-        cout << "1. Add a Book\n2. Remove a Book\n3. Update Book Information\n4. Logout\n";
+
+        // Pause for user to read output before continuing
+        pressEnterToContinue();
+
+        clearScreen();
+        cout << "Admin Dashboard" << endl;
+        cout << "===============================" << endl;
+        cout << "1. Add a Book" << endl;
+        cout << "2. Remove a Book" << endl;
+        cout << "3. Update Book Information" << endl;
+        cout << "4. Logout" << endl;
+        cout << "===============================" << endl;
+        cout << "Enter your choice: ";
         cin >> choice;
+
         switch (choice) {
             case 1:
                 addBook();
@@ -119,11 +140,13 @@ void LibrarySystem::adminMenu() {
                 updateBook();
                 break;
             case 4:
-                cout << "Logged out.\n";
+                cout << "Logged out." << endl;
                 break;
             default:
-                cout << "Invalid choice. Try again.\n";
+                cout << "Invalid choice. Please try again." << endl;
+                break;
         }
+
     } while (choice != 4);
 }
 
@@ -152,7 +175,12 @@ void LibrarySystem::addBook() {
     }
 }
 
-void LibrarySystem::borrowBook(const string& bookTitle) {
+void LibrarySystem::borrowBook() {
+    string bookTitle;
+    cout << "Enter the title of the book to borrow: ";
+    cin.ignore();
+    getline(cin, bookTitle);
+
     cout << "Borrowing book: " << bookTitle << endl;
 
     // Find the book in the book database
@@ -283,4 +311,21 @@ void LibrarySystem::updateInStock(int num) {
 
 void LibrarySystem::setCopiesInStock(int num) {
     copiesInStock = num;
+}
+
+// Utility function to clear the screen
+void LibrarySystem::clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    // Assume POSIX compliant system
+    system("clear");
+#endif
+}
+
+// Utility function to prompt user to press Enter to continue
+void LibrarySystem::pressEnterToContinue() {
+    cout << "Press Enter to continue...";
+    cin.ignore(); // Clear input buffer
+    cin.get();    // Wait for Enter key press
 }
