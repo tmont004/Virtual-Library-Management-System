@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -I.
 
 # .cpp are the source files and the .o are compiled object files pre-linked
-SOURCES = BinarySearchTree.cpp Book.cpp bookdatabase.cpp LibrarySystem.cpp main.cpp security.cpp user_system.cpp
+SOURCES = Book.cpp bookdatabase.cpp LibrarySystem.cpp main.cpp user_system.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
 # this is the name of the final executable, so you type ./my_program to run the program
