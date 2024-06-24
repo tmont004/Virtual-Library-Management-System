@@ -15,6 +15,7 @@ using json = nlohmann::json;
 string bookDB = "bookDB.json";
 extern std::string bookDB;
 string borrowedBooksFilename = "borrowedBooksDB.json";
+string queueFilename = "bookWaitlistDB.json";
 
 // Global flag to indicate if termination signal received
 volatile sig_atomic_t terminationSignalReceived = 0;
@@ -205,8 +206,40 @@ void LibrarySystem::borrowBook() {
     }
 
     // Check if there are copies available
-    if (book.getCopiesInStock() <= 0) {
+    if (book.getCopiesInStock() <= 0) { //If all copies are already borrowed
         cout << "Error: No copies available for book '" << bookTitle << "'." << endl;
+
+        try {
+            // Load the FIFO Queue JSON file
+            json bookWaitlist;
+            ifstream inFile(queueFilename);
+            if (inFile.is_open()) {
+                inFile >> bookWaitlist; //Possibly change to input values into the queue member variable
+                inFile.close();
+        } else {
+            throw runtime_error("Failed to open file for reading: " + queueFilename);
+        }
+
+        // Get the username
+        string username = userInfo.getUsername();
+
+        // Add the user to the book's waitlist
+        bookWaitlist[book.getISBN()].push_back(username);
+
+        // Save the updated waitlist JSON file
+        ofstream outFile(queueFilename);
+        if (outFile.is_open()) {
+            outFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+            outFile.close();
+        } else {
+            throw runtime_error("Failed to open file for writing: " + queueFilename);
+        }
+
+        cout << "Added to waitlist queue for '" << bookTitle << ".'" << endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+        
         return;
     }
 
