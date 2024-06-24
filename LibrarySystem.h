@@ -47,6 +47,8 @@ private:
     void removeBook();
     void updateBook();
 
+    void signalHandler(int signal);
+
     // Methods for loading and saving data
     void loadFromFile(const string &filename2);
     void saveToFile();

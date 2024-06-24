@@ -1,1 +1,20 @@
-{}
+[
+    {
+        "author": "tom",
+        "copiesInStock": 0,
+        "isbn": "134143124",
+        "title": "guide"
+    },
+    {
+        "author": "gorge",
+        "copiesInStock": 5,
+        "isbn": "43212123",
+        "title": "guide2 happness"
+    },
+    {
+        "author": "David Butter",
+        "copiesInStock": 100,
+        "isbn": "5050474738",
+        "title": "A Very Hungry Inch Worm"
+    }
+]

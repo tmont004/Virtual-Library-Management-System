@@ -5,13 +5,19 @@
 #include <limits>
 #include "json.hpp"
 #include "globals.h"
+#include <csignal>   // For signal handling
+#include <cstdlib>   // For exit()
 
 
 using namespace std;
 using json = nlohmann::json;
 
 string bookDB = "bookDB.json";
+extern std::string bookDB;
 string borrowedBooksFilename = "borrowedBooksDB.json";
+
+// Global flag to indicate if termination signal received
+volatile sig_atomic_t terminationSignalReceived = 0;
 
 // Constructor to initialize the userInfo
 LibrarySystem::LibrarySystem(const UserInfo& userInfo) : userInfo(userInfo) {}
@@ -328,4 +334,20 @@ void LibrarySystem::pressEnterToContinue() {
     cout << "Press Enter to continue...";
     cin.ignore(); // Clear input buffer
     cin.get();    // Wait for Enter key press
+}
+
+// Signal handler function
+void LibrarySystem::signalHandler(int signal) {
+    if (signal == SIGINT || signal == SIGTERM) {
+        terminationSignalReceived = 1;
+        std::cout << "Termination signal received. Saving data..." << std::endl;
+
+        // Save data to files before exiting
+        // Example: Save book database
+        bookDatabase.saveToFile(bookDB);
+
+        // You can add more save operations for other databases if needed
+
+        std::exit(EXIT_SUCCESS);  // Exit gracefully
+    }
 }
