@@ -57,12 +57,11 @@ void LibrarySystem::userMenu(const string& userName) {
         cout << "===============================" << endl;
         cout << "User Menu" << endl;
         cout << "1. Search for Books" << endl;
-        cout << "2. Borrow a Book" << endl;
-        cout << "3. Return a Book" << endl;
-        cout << "4. View Borrowed Books" << endl;
-        cout << "5. Add a Book" << endl;
-        cout << "6. View Library" << endl;
-        cout << "7. Logout" << endl;
+        cout << "2. Return a Book" << endl;
+        cout << "3. View Borrowed Books" << endl;
+        cout << "4. Add a Book" << endl;
+        cout << "5. View Library" << endl;
+        cout << "6. Logout" << endl;
         cout << "===============================" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -72,21 +71,18 @@ void LibrarySystem::userMenu(const string& userName) {
                 searchBooks();
                 break;
             case 2:
-                borrowBook();
-                break;
-            case 3:
                 returnBook();
                 break;
-            case 4:
+            case 3:
                 // viewBorrowedBooks();
                 break;
-            case 5:
+            case 4:
                 addBook();
                 break;
-            case 6:
+            case 5:
                 viewLibrary();
                 break;
-            case 7:
+            case 6:
                 cout << "Logged out." << endl;
                 break;
             default:
@@ -94,7 +90,7 @@ void LibrarySystem::userMenu(const string& userName) {
                 break;
         }
 
-    } while (choice != 7);
+    } while (choice != 6);
 }
 
 void LibrarySystem::returnBook() {
@@ -105,17 +101,13 @@ void LibrarySystem::returnBook() {
     cout << "Returning book: " << bookTitle << endl;
 }
 
-void LibrarySystem::searchBooks() {
-    cout << "Searching for books..." << endl;
-}
-
 string LibrarySystem::getTitle() const {
     string title = "a title";
     return title;
 }
 
 void LibrarySystem::viewLibrary() const {
-    cout << "pretend that this is the library" << endl;
+    bookDatabase.printAllBooks();
 }
 
 void LibrarySystem::adminMenu() {
@@ -157,6 +149,110 @@ void LibrarySystem::adminMenu() {
     } while (choice != 4);
 }
 
+void LibrarySystem::searchBooks() {
+
+    int searchChoice;
+
+    clearScreen();
+    cout << "Search Options:" << endl;
+    cout << "===============================" << endl;
+    cout << "1. Search by Title" << endl;
+    cout << "2. Search by Author" << endl;
+    cout << "3. Search by ISBN" << endl;
+    cout << "4. Back to Menu" << endl;
+    cout << "===============================" << endl;
+    cout << "Enter your choice: ";
+    cin >> searchChoice;
+
+    
+
+    switch (searchChoice) {
+         case 1: {
+            string title;
+            cin.ignore(); // Clear newline character
+            cout << "Enter title to search: ";
+            getline(cin, title);
+
+            try {
+                Book foundBook = bookDatabase.findBookByTitle(title);
+                if (!foundBook.getTitle().empty()) {
+                    cout << "Book found:" << endl;
+                    foundBook.print(); // Assuming print() method prints book details
+
+                    // Check if book is available
+                    if (foundBook.getCopiesInStock() > 0) {
+                        cout << "This book is available." << endl;
+                        char borrowChoice;
+                        cout << "Do you want to borrow this book? (y/n): ";
+                        cin >> borrowChoice;
+                        if (borrowChoice == 'y' || borrowChoice == 'Y') {
+                            borrowBook(foundBook);
+                        }
+                    } else {
+                        cout << "This book is currently not available." << endl;
+                    }
+                } else {
+                    cout << "Book with title '" << title << "' not found." << endl;
+                }
+            } catch (const runtime_error& e) {
+                cerr << "Error: " << e.what() << endl;
+            }
+            break;
+        }
+        case 2: {
+            string author;
+            cin.ignore(); // Clear newline character
+            cout << "Enter author to search: ";
+            getline(cin, author);
+
+            cout << "Yet to be Implemented" << endl;
+            // Implement searching books by author
+            // Iterate through database or use appropriate method in BookDatabase
+            // Example: bookDatabase.findBooksByAuthor(author);
+
+            break;
+        }
+        case 3: {
+            string isbn;
+            cout << "Enter ISBN to search: ";
+            cin >> isbn;
+
+            try {
+                Book foundBook = bookDatabase.getBookByISBN(isbn);
+                if (!foundBook.getTitle().empty()) {
+                    cout << "Book found:" << endl;
+                    foundBook.print(); // Assuming print() method prints book details
+
+                    // Check if book is available
+                    if (foundBook.getCopiesInStock() > 0) {
+                        cout << "This book is available." << endl;
+                        char borrowChoice;
+                        cout << "Do you want to borrow this book? (y/n): ";
+                        cin >> borrowChoice;
+                        if (borrowChoice == 'y' || borrowChoice == 'Y') {
+                            borrowBook(foundBook);
+                        }
+                    } else {
+                        cout << "This book is currently not available." << endl;
+                    }
+                } else {
+                    cout << "Book with ISBN '" << isbn << "' not found." << endl;
+                }
+            } catch (const runtime_error& e) {
+                cerr << "Error: " << e.what() << endl;
+            }
+            break;
+        }
+        case 4:
+            // Return to previous menu
+            return;
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+            break;
+    }
+}
+
+
 void LibrarySystem::addBook() {
     cout << "Enter book information\n";
     string title, author, isbn;
@@ -182,68 +278,10 @@ void LibrarySystem::addBook() {
     }
 }
 
-void LibrarySystem::borrowBook() {
-    string bookTitle;
-    cout << "Enter the title of the book to borrow: ";
-    cin.ignore();
-    getline(cin, bookTitle);
-
-    cout << "Borrowing book: " << bookTitle << endl;
-
+void LibrarySystem::borrowBook(const Book& book) {
     // Find the book in the book database
-    Book book;
-    try {
-        book = bookDatabase.findBookByTitle(bookTitle);
-    } catch (const runtime_error& e) {
-        cerr << "Error: " << e.what() << endl;
-        return;
-    }
-
-    // Check if the book was found
-    if (book.getTitle().empty()) {
-        cout << "Error: Book with title '" << bookTitle << "' not found." << endl;
-        return;
-    }
-
-    // Check if there are copies available
-    if (book.getCopiesInStock() <= 0) { //If all copies are already borrowed
-        cout << "Error: No copies available for book '" << bookTitle << "'." << endl;
-
-        try {
-            // Load the FIFO Queue JSON file
-            json bookWaitlist;
-            ifstream inFile(queueFilename);
-            if (inFile.is_open()) {
-                inFile >> bookWaitlist; //Possibly change to input values into the queue member variable
-                inFile.close();
-        } else {
-            throw runtime_error("Failed to open file for reading: " + queueFilename);
-        }
-
-        // Get the username
-        string username = userInfo.getUsername();
-
-        // Add the user to the book's waitlist
-        bookWaitlist[book.getISBN()].push_back(username);
-
-        // Save the updated waitlist JSON file
-        ofstream outFile(queueFilename);
-        if (outFile.is_open()) {
-            outFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
-            outFile.close();
-        } else {
-            throw runtime_error("Failed to open file for writing: " + queueFilename);
-        }
-
-        cout << "Added to waitlist queue for '" << bookTitle << ".'" << endl;
-    } catch (const exception& e) {
-        cerr << "Error: " << e.what() << endl;
-    }
-        
-        return;
-    }
-
-    // Proceed to borrow the book
+    // Borrow the book logic here
+    // Update book copies in stock, save borrowed books to file, etc.
     try {
         // Decrease the number of copies in stock
         bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() - 1);
@@ -273,7 +311,7 @@ void LibrarySystem::borrowBook() {
             throw runtime_error("Failed to open file for writing: " + borrowedBooksFilename);
         }
 
-        cout << "Book '" << bookTitle << "' borrowed successfully." << endl;
+        cout << "Book '" << book.getTitle() << "' borrowed successfully." << endl;
     } catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
     }

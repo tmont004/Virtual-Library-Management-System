@@ -39,7 +39,7 @@ private:
     std::string author;
     std::string isbn;
     int copiesInStock;
-    linkedQueueType waitlistQueue;
+    //linkedQueueType waitlistQueue;
 };
 
 #endif // BOOK_H

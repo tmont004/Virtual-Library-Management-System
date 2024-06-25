@@ -27,7 +27,7 @@ public:
 
     // Methods for user and admin management
     bool operator==(const string &title) const;
-    void borrowBook();
+    void borrowBook(const Book& book);
     void returnBook();
     string getTitle() const;
 
