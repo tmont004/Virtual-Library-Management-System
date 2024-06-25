@@ -3,6 +3,7 @@
 
 #include <string>
 #include "json.hpp" // Include JSON library
+#include "queue.h" //Include the definition for the queue class
 
 using json = nlohmann::json; // Alias for JSON namespace
 
@@ -38,6 +39,7 @@ private:
     std::string author;
     std::string isbn;
     int copiesInStock;
+    //linkedQueueType waitlistQueue;
 };
 
 #endif // BOOK_H

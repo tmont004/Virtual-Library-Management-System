@@ -160,7 +160,15 @@ bool UserInfo::isAdmin() const {
 // Function to capture user action
 string captureUserAction() {
     string action;
-    cout << "Choose an action: (login, create, logout, exit): ";
+
+     cout << "==== Welcome to the Library System ====" << endl;
+        cout << "Choose an action:" << endl;
+        cout << "1. Login" << endl;
+        cout << "2. Create an Account" << endl;
+        cout << "3. Logout" << endl;
+        cout << "4. Exit" << endl;
+        cout << "=======================================" << endl;
+        cout << "Enter your choice (1-4): ";
     cin >> action;
     return action;
 }
@@ -174,7 +182,11 @@ bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername) {
 
     while (running) {
         string action = captureUserAction();
-        if (action == "login") {
+
+        if (action == "1") {
+
+        //if (action == "login") {
+
             welcomePage.inputCredentials();
             if (welcomePage.authenticate()) {
                 isLoggedIn = true;
@@ -187,7 +199,7 @@ bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername) {
             } else {
                 cout << "Login failed." << endl;
             }
-        } else if (action == "create") {
+        } else if (action == "2") {
             string newUsername, newPassword;
             cout << "Enter new username: ";
             cin >> newUsername;
@@ -199,10 +211,10 @@ bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername) {
             } else {
                 cout << "Username already taken." << endl;
             }
-        } else if (action == "logout") {
+        } else if (action == "3") {
             welcomePage.logout();
             cout << "Logged out." << endl;
-        } else if (action == "exit") {
+        } else if (action == "4") {
             welcomePage.exit();
         } else {
             cout << "Invalid action." << endl;

@@ -1,1 +1,12 @@
-{}
+{
+    "r": {
+        "isAdmin": false,
+        "password": "1",
+        "username": "r"
+    },
+    "riley99": {
+        "isAdmin": true,
+        "password": "1234",
+        "username": "riley99"
+    }
+}
