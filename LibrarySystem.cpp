@@ -265,7 +265,6 @@ void LibrarySystem::returnBook() {
 
     // Check if the book was found
     if (book.getISBN().empty()) {
-        cout << "Error: Book with ISBN '" << isbn << "' not found." << endl;
         return;
     }
 
