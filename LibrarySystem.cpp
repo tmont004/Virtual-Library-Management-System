@@ -8,9 +8,9 @@
 #include <csignal>   // For signal handling
 #include <cstdlib>   // For exit()
 
-
 using namespace std;
 using json = nlohmann::json;
+
 
 string bookDB = "bookDB.json";
 extern std::string bookDB;
@@ -20,15 +20,16 @@ string queueFilename = "bookWaitlistDB.json";
 // Global flag to indicate if termination signal received
 volatile sig_atomic_t terminationSignalReceived = 0;
 
+
 // Constructor to initialize the userInfo
 LibrarySystem::LibrarySystem(const UserInfo& userInfo) : userInfo(userInfo) {}
 
 // Method to run the library system
 void LibrarySystem::run() {
+
     bookDatabase.loadFromFile(bookDB);  // Load data from files
     userOrAdminMenu(); // Display menu after successful login
     bookDatabase.saveToFile(bookDB);    // Save data to files
-}
 
 // Method to display the user or admin menu after login
 void LibrarySystem::userOrAdminMenu() {
@@ -37,7 +38,6 @@ void LibrarySystem::userOrAdminMenu() {
     string userName = userInfo.getUsername();
     
     bool isAdmin = userInfo.isAdmin();
-
     // Check if the user is an admin or a regular user
     if (isAdmin) {
         adminMenu();
@@ -78,7 +78,9 @@ void LibrarySystem::userMenu(const string& userName) {
                 returnBook();
                 pressEnterToContinue();
                 break;
+            }
             case 4:
+
                 clearScreen();
                 viewBorrowedBooks();
                 pressEnterToContinue();
@@ -141,6 +143,7 @@ void LibrarySystem::adminMenu() {
                 cout << "Invalid choice. Please try again." << endl;
                 pressEnterToContinue();
                 break;
+
         }
 
     } while (choice != 4);
@@ -305,7 +308,6 @@ void LibrarySystem::returnBook() {
 
 }
 
-
 void LibrarySystem::addBook() {
     cout << "Enter book information\n";
     string title, author, isbn;
@@ -320,6 +322,7 @@ void LibrarySystem::addBook() {
     getline(cin, isbn);
     cout << "Enter number of copies: ";
     cin >> copiesInStock;
+
 
     Book newBook(title, author, isbn, copiesInStock); //this is a book object, we have to reference this object
 
@@ -468,6 +471,7 @@ void LibrarySystem::viewBorrowedBooks() const {
 
 }
 
+
 void LibrarySystem::removeBook() {
     string isbn;
     cout << "Enter ISBN of the book to remove: ";
@@ -523,10 +527,10 @@ void LibrarySystem::updateBook() {
     }
 }
 
-
 bool LibrarySystem::operator==(const string &title) const {
     return this->getTitle() == title;
 }
+
 
 string LibrarySystem::getTitle() const {
     string title = "a title";

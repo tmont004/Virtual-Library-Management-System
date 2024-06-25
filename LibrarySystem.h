@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <unordered_map>
+
+#include <queue>
 #include "user_system.hpp"
 #include "Book.h"
 #include "bookdatabase.h" // Include the BookDatabase header
@@ -36,11 +38,15 @@ public:
     // Setters for book details
     void setTitle(const string &title);
     void setAuthor(const string &author);
+
     // void setCopiesInStock(int copies);
 
 private:
     // Data structures
     unordered_map<string, User> users;
+
+    // queue<string> checkoutQueue;
+
     BookDatabase bookDatabase; // Add an instance of BookDatabase
     UserInfo userInfo; // Add an instance of UserInfo
 

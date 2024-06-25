@@ -100,3 +100,4 @@ string captureUserAction();
 bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername);
 
 #endif // USER_SYSTEM_HPP
+

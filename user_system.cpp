@@ -182,7 +182,11 @@ bool runUserInterface(UserRegistry& userRegistry, string& loggedInUsername) {
 
     while (running) {
         string action = captureUserAction();
+
         if (action == "1") {
+
+        //if (action == "login") {
+
             welcomePage.inputCredentials();
             if (welcomePage.authenticate()) {
                 isLoggedIn = true;
