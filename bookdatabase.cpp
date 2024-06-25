@@ -115,7 +115,7 @@ Book BookDatabase::getBookByISBN(const string &isbn) const {
     if (node) {
         return node->book;
     }
-    throw runtime_error("Book not found");
+    throw runtime_error("Book with ISBN " + isbn + " not found");
 }
 
 BookDatabase::TreeNode* BookDatabase::findBook(TreeNode* node, const string &isbn) const {

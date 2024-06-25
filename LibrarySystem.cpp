@@ -57,11 +57,12 @@ void LibrarySystem::userMenu(const string& userName) {
         cout << "===============================" << endl;
         cout << "User Menu" << endl;
         cout << "1. Search for Books" << endl;
-        cout << "2. Return a Book" << endl;
-        cout << "3. View Borrowed Books" << endl;
-        cout << "4. Add a Book" << endl;
-        cout << "5. View Library" << endl;
-        cout << "6. Logout" << endl;
+        cout << "2. Borrow a Book" << endl;
+        cout << "3. Return a Book" << endl;
+        cout << "4. View Borrowed Books" << endl;
+        cout << "5. Add a Book" << endl;
+        cout << "6. View Library" << endl;
+        cout << "7. Logout" << endl;
         cout << "===============================" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -74,15 +75,19 @@ void LibrarySystem::userMenu(const string& userName) {
                 returnBook();
                 break;
             case 3:
-                // viewBorrowedBooks();
+                returnBook();
                 break;
             case 4:
-                addBook();
+                clearScreen();
+                viewBorrowedBooks();
                 break;
             case 5:
-                viewLibrary();
+                addBook();
                 break;
             case 6:
+                viewLibrary();
+                break;
+            case 7:
                 cout << "Logged out." << endl;
                 break;
             default:
@@ -90,7 +95,7 @@ void LibrarySystem::userMenu(const string& userName) {
                 break;
         }
 
-    } while (choice != 6);
+    } while (choice != 7);
 }
 
 void LibrarySystem::returnBook() {
@@ -317,6 +322,103 @@ void LibrarySystem::borrowBook(const Book& book) {
     }
 }
 
+void LibrarySystem::interactiveBorrowBook() {
+    string bookTitle;
+    cout << "Enter the title of the book to borrow: ";
+    cin.ignore();
+    getline(cin, bookTitle);
+
+    cout << "Borrowing book: " << bookTitle << endl;
+    // Find the book in the book database
+    Book book;
+    try {
+        book = bookDatabase.findBookByTitle(bookTitle);
+    } catch (const runtime_error& e) {
+        cerr << "Error: " << e.what() << endl;
+        return;
+    }
+
+    // Check if the book was found
+    if (book.getTitle().empty()) {
+        cout << "Error: Book with title '" << bookTitle << "' not found." << endl;
+        return;
+    }
+
+    // Check if there are copies available
+    if (book.getCopiesInStock() <= 0) { //If all copies are already borrowed
+        cout << "Error: No copies available for book '" << bookTitle << "'." << endl;
+
+        try {
+            // Load the FIFO Queue JSON file
+            json bookWaitlist;
+            ifstream inFile(queueFilename);
+            if (inFile.is_open()) {
+                inFile >> bookWaitlist; //Possibly change to input values into the queue member variable
+                inFile.close();
+        } else {
+            throw runtime_error("Failed to open file for reading: " + queueFilename);
+        }
+
+        // Get the username
+        string username = userInfo.getUsername();
+
+        // Add the user to the book's waitlist
+        bookWaitlist[book.getISBN()].push_back(username);
+
+        // Save the updated waitlist JSON file
+        ofstream outFile(queueFilename);
+        if (outFile.is_open()) {
+            outFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+            outFile.close();
+        } else {
+            throw runtime_error("Failed to open file for writing: " + queueFilename);
+        }
+
+        cout << "Added to waitlist queue for '" << bookTitle << ".'" << endl;
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+        
+        return;
+    }
+}
+
+void LibrarySystem::viewBorrowedBooks() const {
+    
+    string username = userInfo.getUsername();
+
+    // Load the borrowed books JSON file
+    json borrowedBooks;
+    ifstream inFile(borrowedBooksFilename);
+    if (inFile.is_open()) {
+        inFile >> borrowedBooks;
+        inFile.close();
+    } else {
+        cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
+        return;
+    }
+
+    // Check if user has borrowed any books
+    if (borrowedBooks.contains(username)) {
+        cout << "Borrowed Books for User: " << username << endl;
+        cout << "===============================" << endl;
+
+        // Iterate through borrowed books
+        for (const auto& isbn : borrowedBooks[username]) {
+            try {
+                Book borrowedBook = bookDatabase.getBookByISBN(isbn);
+                borrowedBook.print(); // Assuming print() method prints book details
+                cout << "-------------------------" << endl;
+            } catch (const runtime_error& e) {
+                cerr << "Error: " << e.what() << endl;
+                cout << "-------------------------" << endl;
+            }
+        }
+    } else {
+        cout << "No books currently borrowed by user: " << username << endl;
+    }
+
+}
 
 void LibrarySystem::removeBook() {
     string isbn;

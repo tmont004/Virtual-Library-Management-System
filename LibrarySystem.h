@@ -28,6 +28,8 @@ public:
     // Methods for user and admin management
     bool operator==(const string &title) const;
     void borrowBook(const Book& book);
+    void interactiveBorrowBook();
+    void viewBorrowedBooks() const;
     void returnBook();
     string getTitle() const;
 
