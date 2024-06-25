@@ -6,6 +6,7 @@
 
 //First in First out Queue classes
 //Based on textbook ch 17
+template <class Type>
 struct nodeType
 {
     Type info;
@@ -81,7 +82,7 @@ void deleteQueue();
 linkedQueueType();
 //Default constructor
 
-queueType(const linkedQueueType<Type>& otherQueue);
+linkedQueueType(const linkedQueueType<Type>& otherQueue);
 //Copy constructor
 
 ~linkedQueueType();
@@ -210,7 +211,7 @@ linkedQueueType<Type>::linkedQueueType(const linkedQueueType<Type>& otherQueue)
         while (current != nullptr)
         {
             newNode = new nodeType<Type>;
-            
+
             newNode->info = current->info;
             newNode->link = nullptr;
             last->link = newNode;
