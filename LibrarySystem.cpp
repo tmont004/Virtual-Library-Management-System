@@ -49,8 +49,6 @@ void LibrarySystem::userOrAdminMenu() {
 void LibrarySystem::userMenu(const string& userName) {
     int choice;
     do {
-        // Pause for user to read output before continuing
-        pressEnterToContinue();
 
         clearScreen();
         cout << "Welcome, " << " User: " << userName << endl;
@@ -70,22 +68,28 @@ void LibrarySystem::userMenu(const string& userName) {
         switch (choice) {
             case 1:
                 searchBooks();
+                pressEnterToContinue();
                 break;
             case 2:
                 returnBook();
+                pressEnterToContinue();
                 break;
             case 3:
                 returnBook();
+                pressEnterToContinue();
                 break;
             case 4:
                 clearScreen();
                 viewBorrowedBooks();
+                pressEnterToContinue();
                 break;
             case 5:
                 addBook();
+                pressEnterToContinue();
                 break;
             case 6:
                 viewLibrary();
+                pressEnterToContinue();
                 break;
             case 7:
                 cout << "Logged out." << endl;
@@ -98,29 +102,12 @@ void LibrarySystem::userMenu(const string& userName) {
     } while (choice != 7);
 }
 
-void LibrarySystem::returnBook() {
-    string bookTitle;
-    cout << "Enter the title of the book to return: ";
-    cin.ignore();
-    getline(cin, bookTitle);
-    cout << "Returning book: " << bookTitle << endl;
-}
 
-string LibrarySystem::getTitle() const {
-    string title = "a title";
-    return title;
-}
 
-void LibrarySystem::viewLibrary() const {
-    bookDatabase.printAllBooks();
-}
 
 void LibrarySystem::adminMenu() {
     int choice;
     do {
-
-        // Pause for user to read output before continuing
-        pressEnterToContinue();
 
         clearScreen();
         cout << "Welcome, " << endl; //<< " Admin: " << userName << endl;
@@ -136,18 +123,23 @@ void LibrarySystem::adminMenu() {
         switch (choice) {
             case 1:
                 addBook();
+                pressEnterToContinue();
                 break;
             case 2:
                 removeBook();
+                pressEnterToContinue();
                 break;
             case 3:
                 updateBook();
+                pressEnterToContinue();
                 break;
             case 4:
                 cout << "Logged out." << endl;
+                pressEnterToContinue();
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
+                pressEnterToContinue();
                 break;
         }
 
@@ -168,8 +160,6 @@ void LibrarySystem::searchBooks() {
     cout << "===============================" << endl;
     cout << "Enter your choice: ";
     cin >> searchChoice;
-
-    
 
     switch (searchChoice) {
          case 1: {
@@ -257,6 +247,127 @@ void LibrarySystem::searchBooks() {
     }
 }
 
+void LibrarySystem::returnBook() {
+
+    string userChoice;
+    cout << "Would you like to return by ISBN (y/n)? ";
+    cin >> userChoice;
+    if (userChoice == "y") {
+        cout << "Enter the ISBN of the book to return: ";
+        string isbn;
+        cin >> isbn;
+
+        // Find the book in the book database
+        Book book;
+        try {
+            book = bookDatabase.getBookByISBN(isbn);
+        } catch (const runtime_error& e) {
+            cerr << "Error: " << e.what() << endl;
+            return;
+        }
+
+        // Check if the book was found
+        if (book.getISBN().empty()) {
+            cout << "Error: Book with ISBN '" << isbn << "' not found." << endl;
+            return;
+        }
+
+        // Increase the number of copies in stock
+        try {
+            bookDatabase.updateBook(isbn, book.getTitle(), book.getAuthor(), book.getCopiesInStock() + 1);
+            cout << "Book with ISBN '" << isbn << "' returned successfully." << endl;
+
+            // Remove the book from the user's borrowed books list
+            string username = userInfo.getUsername();
+            json borrowedBooks;
+            ifstream inFile(borrowedBooksFilename);
+            if (inFile.is_open()) {
+                inFile >> borrowedBooks;
+                inFile.close();
+
+                if (borrowedBooks.contains(username)) {
+                    auto& booksList = borrowedBooks[username];
+                    booksList.erase(std::remove(booksList.begin(), booksList.end(), isbn), booksList.end());
+
+                    // Save the updated borrowed books JSON file
+                    ofstream outFile(borrowedBooksFilename);
+                    if (outFile.is_open()) {
+                        outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
+                        outFile.close();
+                    } else {
+                        cerr << "Failed to open file for writing: " << borrowedBooksFilename << endl;
+                    }
+                } else {
+                    cerr << "Error: User '" << username << "' not found in borrowed books database." << endl;
+                }
+            } else {
+                cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
+            }
+        } catch (const exception& e) {
+            cerr << "Error: " << e.what() << endl;
+        }
+
+    } else if (userChoice == "n") {
+        cout << "Enter the title of the book to return: ";
+        cin.ignore();
+        string bookTitle;
+        getline(cin, bookTitle);
+
+        // Find the book in the book database
+        Book book;
+        try {
+            book = bookDatabase.findBookByTitle(bookTitle);
+        } catch (const runtime_error& e) {
+            cerr << "Error: " << e.what() << endl;
+            return;
+        }
+
+        // Check if the book was found
+        if (book.getTitle().empty()) {
+            cout << "Error: Book with title '" << bookTitle << "' not found." << endl;
+            return;
+        }
+
+        // Increase the number of copies in stock
+        try {
+            bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() + 1);
+            cout << "Book '" << bookTitle << "' returned successfully." << endl;
+
+            // Remove the book from the user's borrowed books list
+            string username = userInfo.getUsername();
+            json borrowedBooks;
+            ifstream inFile(borrowedBooksFilename);
+            if (inFile.is_open()) {
+                inFile >> borrowedBooks;
+                inFile.close();
+
+                if (borrowedBooks.contains(username)) {
+                    auto& booksList = borrowedBooks[username];
+                    booksList.erase(std::remove(booksList.begin(), booksList.end(), book.getISBN()), booksList.end());
+
+                    // Save the updated borrowed books JSON file
+                    ofstream outFile(borrowedBooksFilename);
+                    if (outFile.is_open()) {
+                        outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
+                        outFile.close();
+                    } else {
+                        cerr << "Failed to open file for writing: " << borrowedBooksFilename << endl;
+                    }
+                } else {
+                    cerr << "Error: User '" << username << "' not found in borrowed books database." << endl;
+                }
+            } else {
+                cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
+            }
+        } catch (const exception& e) {
+            cerr << "Error: " << e.what() << endl;
+        }
+
+    } else {
+        cout << "Invalid choice. Please try again." << endl;
+    }
+
+}
 
 void LibrarySystem::addBook() {
     cout << "Enter book information\n";
@@ -384,7 +495,7 @@ void LibrarySystem::interactiveBorrowBook() {
 }
 
 void LibrarySystem::viewBorrowedBooks() const {
-    
+
     string username = userInfo.getUsername();
 
     // Load the borrowed books JSON file
@@ -478,6 +589,15 @@ void LibrarySystem::updateBook() {
 
 bool LibrarySystem::operator==(const string &title) const {
     return this->getTitle() == title;
+}
+
+string LibrarySystem::getTitle() const {
+    string title = "a title";
+    return title;
+}
+
+void LibrarySystem::viewLibrary() const {
+    bookDatabase.printAllBooks();
 }
 
 int LibrarySystem::getNoOfCopiesInStock() const {
