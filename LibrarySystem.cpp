@@ -71,7 +71,7 @@ void LibrarySystem::userMenu(const string& userName) {
                 pressEnterToContinue();
                 break;
             case 2:
-                returnBook();
+                interactiveBorrowBook();
                 pressEnterToContinue();
                 break;
             case 3:
@@ -276,6 +276,7 @@ void LibrarySystem::returnBook() {
         // Remove the book from the user's borrowed books list
         string username = userInfo.getUsername();
         json borrowedBooks;
+        json bookWaitlist;
         ifstream inFile(borrowedBooksFilename);
         if (inFile.is_open()) {
             inFile >> borrowedBooks;
@@ -299,6 +300,55 @@ void LibrarySystem::returnBook() {
         } else {
             cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
         }
+
+        //Update the book's waitlist
+        ifstream queueFile(queueFilename);
+        if (queueFile.is_open()) {
+            queueFile >> bookWaitlist;
+            queueFile.close();
+            
+            if (!bookWaitlist[book.getISBN()].empty()) { //If there are users in the queue
+                //Get the username of the next user in the waitlist
+                auto nextInLine = bookWaitlist[book.getISBN()].at(0);
+                bookWaitlist[book.getISBN()].erase(0);
+
+                // Save the updated waitlist JSON file
+                ofstream waitlistFile(queueFilename);
+                if (waitlistFile.is_open()) {
+                    waitlistFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+                    waitlistFile.close();
+                } else {
+                    cerr << "Failed to open file for writing: " << borrowedBooksFilename << endl;
+                }
+
+                //Borrow the book for the user specified by nextInLine
+                // Decrease the number of copies in stock
+                bookDatabase.updateBook(book.getISBN(), book.getTitle(), book.getAuthor(), book.getCopiesInStock() - 1);
+
+                  // Load the borrowed books JSON file
+                ifstream inFile(borrowedBooksFilename);
+                if (inFile.is_open()) {
+                   inFile >> borrowedBooks;
+                    inFile.close();
+                } else {
+                   throw runtime_error("Failed to open file for reading: " + borrowedBooksFilename);
+                }
+
+                // Add the book to the next in line user's borrowed books list
+                borrowedBooks[nextInLine].push_back(book.getISBN());
+
+                // Save the updated borrowed books JSON file
+                ofstream outFile(borrowedBooksFilename);
+                if (outFile.is_open()) {
+                    outFile << borrowedBooks.dump(4); // Pretty print with 4 spaces
+                    outFile.close();
+                } else {
+                    throw runtime_error("Failed to open file for writing: " + borrowedBooksFilename);
+                }
+            } 
+            } else {
+                cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
+            }
     } catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
     }
@@ -399,10 +449,10 @@ void LibrarySystem::interactiveBorrowBook() {
         try {
             // Load the FIFO Queue JSON file
             json bookWaitlist;
-            ifstream inFile(queueFilename);
-            if (inFile.is_open()) {
-                inFile >> bookWaitlist; //Possibly change to input values into the queue member variable
-                inFile.close();
+            ifstream queueFile(queueFilename);
+            if (queueFile.is_open()) {
+                queueFile >> bookWaitlist; //Possibly change to input values into the queue member variable
+                queueFile.close();
         } else {
             throw runtime_error("Failed to open file for reading: " + queueFilename);
         }
@@ -414,21 +464,24 @@ void LibrarySystem::interactiveBorrowBook() {
         bookWaitlist[book.getISBN()].push_back(username);
 
         // Save the updated waitlist JSON file
-        ofstream outFile(queueFilename);
-        if (outFile.is_open()) {
-            outFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
-            outFile.close();
+        ofstream waitlistFile(queueFilename);
+        if (waitlistFile.is_open()) {
+            waitlistFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+            waitlistFile.close();
         } else {
             throw runtime_error("Failed to open file for writing: " + queueFilename);
         }
 
         cout << "Added to waitlist queue for '" << bookTitle << ".'" << endl;
-    } catch (const exception& e) {
+        } catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
+        }
     }
-        
-        return;
-    }
+    else{
+        borrowBook(book);
+    }    
+    
+    return;
 }
 
 void LibrarySystem::viewBorrowedBooks() const {
