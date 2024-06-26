@@ -306,6 +306,9 @@ void LibrarySystem::returnBook() {
         if (queueFile.is_open()) {
             queueFile >> bookWaitlist;
             queueFile.close();
+            } else {
+                   throw runtime_error("Failed to open file for reading: " + borrowedBooksFilename);
+                }
             
             if (!bookWaitlist[book.getISBN()].empty()) { //If there are users in the queue
                 //Get the username of the next user in the waitlist
@@ -345,7 +348,7 @@ void LibrarySystem::returnBook() {
                 } else {
                     throw runtime_error("Failed to open file for writing: " + borrowedBooksFilename);
                 }
-            } 
+             
             } else {
                 cerr << "Failed to open file for reading: " << borrowedBooksFilename << endl;
             }
@@ -377,6 +380,36 @@ void LibrarySystem::addBook() {
         cout << "Book with this ISBN already exists.\n";
     } else {
         bookDatabase.addBook(newBook);
+        
+        //Add the book's ISBN to the waitlist as a new entry
+        try{
+            
+            json bookWaitlist;
+            ifstream queueFile(queueFilename);
+            if (queueFile.is_open()) {
+                queueFile >> bookWaitlist;
+                queueFile.close();
+                } else {
+                   throw runtime_error("Failed to open file for reading: " + borrowedBooksFilename);
+                }
+
+                //Add the ISBN to the end of the list
+                bookWaitlist.push_back({isbn, {""}});
+                bookWaitlist[isbn].erase(0);
+
+
+                // Save the updated waitlist JSON file
+                ofstream waitlistFile(queueFilename);
+                if (waitlistFile.is_open()) {
+                    waitlistFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+                    waitlistFile.close();
+                } else {
+                    cerr << "Failed to open file for writing: " << borrowedBooksFilename << endl;
+                }
+        } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
         cout << "Book added successfully.\n";
     }
 }
@@ -530,8 +563,32 @@ void LibrarySystem::removeBook() {
         // Check if the book exists
         if (bookDatabase.isBookAvailable(isbn)) {
             bookDatabase.removeBook(isbn);
-            cout << "Book with ISBN " << isbn << " removed successfully.\n";
-        } else {
+           
+            //Remove the book's ISBN from the waitlist
+            json bookWaitlist;
+            ifstream queueFile(queueFilename);
+            
+            if (queueFile.is_open()) {
+                queueFile >> bookWaitlist;
+                queueFile.close();
+                } else {
+                   throw runtime_error("Failed to open file for reading: " + borrowedBooksFilename);
+                }
+
+                //Erase the ISBN and its associated objects
+                bookWaitlist.erase(isbn);
+
+                // Save the updated waitlist JSON file
+                ofstream waitlistFile(queueFilename);
+                if (waitlistFile.is_open()) {
+                    waitlistFile << bookWaitlist.dump(4); // Pretty print with 4 spaces
+                    waitlistFile.close();
+                } else {
+                    cerr << "Failed to open file for writing: " << borrowedBooksFilename << endl;
+                }
+        cout << "Book with ISBN " << isbn << " removed successfully.\n";
+
+        }  else {
             cout << "Error: Book with ISBN " << isbn << " not found.\n";
         }
     } catch (const exception& e) {
