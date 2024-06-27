@@ -1,0 +1,47 @@
+im still working on it
+
+Table of contents
+
+1: Introduction
+2: Installation
+3: Usage
+
+
+
+
+
+
+
+1:::::
+
+
+The Virtual Library Management System (VLMS) is a conprehensive book management program
+it allows users to create an account, borrow books, browse books, and return books. 
+
+
+
+2::::
+
+(note) To install VLMS, a c++ compiler capable of c++14 or higher is !required!
+
+Step 1: clone the repository to your device
+
+step 2a: For windows computers (mac or linux, reffer to step 2b ) go to terminal, powersheell, commandline, and assure
+that youre in the directory of the run.bat file, once you're in the directory, type  ' .\run.bat '. youll see the program compiling
+and once it does, it will direct you run the command ' .\my_program.exe ' once you run this command, the program will start.
+
+step 2b: For mac and linux, go to the files where the the makefile and the run.bat file are. Once you are there, change the run.bat file to run.txt or remove it.
+once you do that, remove the .txt extension from the makefile. It should look like this ' Makefile ' or ' makefile '. once that is complete 
+run the command ' make ' to compile the program, afterwards when its complete, run the command ./my_program to start the program. 
+
+
+
+step 3::::
+
+
+1: create an account by typing 'create'
+
+2: after creating an accunt log in by typing 'login'
+
+3: after entering the program the screen will display.... ect ect ill add more to it tomorrow
+
