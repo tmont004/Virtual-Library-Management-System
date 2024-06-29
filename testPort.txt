@@ -1,0 +1,33 @@
+// This is the child of the first CMakeLists for the actual google test library (I think!)
+
+cmake_minimum_required(VERSION 3.30)
+
+set(This ExampleTests)
+
+
+set(Sources 
+    BinarySearchTree.cpp 
+    Book.cpp
+    bookdatabase.cpp
+    BinarySearchTree.cpp
+    LibrarySystem.cpp
+    queue.cpp
+    security.cpp
+    user_system.cpp
+    main.cpp
+)
+
+add_executable(${This} ${Sources})
+
+target_link_libraries($This} PUBLIC
+	gtest_main			// Calls in the CMakeLists.txt that has the google test parameters
+	Example
+)
+
+add_test(
+	NAME ${This}
+	COMMAND ${This}
+
+
+// Stop @ 8:32 - https://www.youtube.com/watch?v=Lp1ifh9TuFI&t=456s
+)
