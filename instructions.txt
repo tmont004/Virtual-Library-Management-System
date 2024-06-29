@@ -19,10 +19,10 @@ after compilation you run the following command
 
 thats it.
 
-DO NOT DELETE MY MAKEFILE plz, just leave it as .txt 
-::::
+::::::
 
-if you have mac or linux, just run
+if you have mac or linux, remove the .txt from the make file then run the following commands
+
 
 make 
 
